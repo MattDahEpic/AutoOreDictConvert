@@ -1,9 +1,11 @@
 package com.mattdahepic.autooredictconv.config;
 
+import com.google.common.io.Files;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -18,15 +20,11 @@ public class Config {
                 config.createNewFile();
                 addDefaults(config);
             }
-            FileReader in = new FileReader(config);
-            BufferedReader read = new BufferedReader(in);
-            System.out.println("gets here.");
-            for (String line; (line = read.readLine()) != null;) {
-                System.out.println("parse");
+            System.out.println("got here");
+            for (String line : Files.readLines(config,Charset.defaultCharset())) {
+                System.out.println("parse with line being "+line);
                 parse(line,conversions);
             }
-            read.close();
-            in.close();
         } catch (Exception e) {}
         System.out.println(conversions.keySet());
     }
