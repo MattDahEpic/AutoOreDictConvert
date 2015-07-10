@@ -1,0 +1,16 @@
+[
+{
+  "modid": "autooredictconv",
+  "name": "Auto Ore Dictionary Converter",
+  "description": "Converts specified ore dictionary items on keybinding.",
+  "version": "%{version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["MattDahEpic"],
+  "credits": "OreDictionary for existing, orion15 on the Minecraft Forums for the idea",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
