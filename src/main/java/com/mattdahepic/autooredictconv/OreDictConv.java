@@ -3,6 +3,7 @@ package com.mattdahepic.autooredictconv;
 //mport com.mattdahepic.autooredictconv.command.CommandConfig;
 import com.mattdahepic.autooredictconv.config.Config;
 import com.mattdahepic.autooredictconv.network.PacketHandler;
+import com.mattdahepic.mdecore.helpers.LogHelper;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -38,7 +39,7 @@ public class OreDictConv {
     }
     @Mod.EventHandler
     public void postInit (FMLPostInitializationEvent event) {
-        //Log.info("Ready to convert with " + Config.oreValues.length + " entries in the config!");
+        LogHelper.info(MODID,"Ready to convert with "+Config.conversions.keySet().size()+" entries in the config.");
     }
     @Mod.EventHandler
     public void serverStarting (FMLServerStartingEvent event) {

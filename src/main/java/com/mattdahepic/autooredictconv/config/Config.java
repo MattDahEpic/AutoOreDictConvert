@@ -1,16 +1,16 @@
 package com.mattdahepic.autooredictconv.config;
 
-import com.google.common.io.Files;
 import com.mattdahepic.autooredictconv.OreDictConv;
 import com.mattdahepic.mdecore.helpers.LogHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import java.io.*;
-import java.nio.charset.Charset;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.Scanner;
 
 public class Config {
     public static Map<String,ItemStack> conversions = new HashMap<String, ItemStack>();
@@ -23,10 +23,12 @@ public class Config {
                 addDefaults(config);
             }
             System.out.println("got here");
-            for (String line : Files.readLines(config,Charset.defaultCharset())) {
-                System.out.println("parse with line being "+line);
-                parse(line,conversions);
+            Scanner scn = new Scanner(config);
+            while (scn.hasNextLine()) {
+                System.out.println("parse");
+                parse(scn.nextLine(),conversions);
             }
+            scn.close();
         } catch (IOException e) {
             LogHelper.error(OreDictConv.MODID,e.getMessage());
         }
@@ -35,16 +37,17 @@ public class Config {
     private static void parse (String line, Map<String,ItemStack> list) {
         //oreDict=modid:itemName@metaValue
         String oreDict = line.substring(0,line.indexOf("="));
-        Item itemName = Item.getByNameOrId(line.substring(line.indexOf("="+1),line.indexOf("@")));
+        Item item;
         int meta;
-        try {
-            meta = Integer.parseInt(line.substring(line.indexOf("@")+1));
-        } catch (NumberFormatException e) {
+        if (line.indexOf("@") < 0) { //no meta specified
+            item = Item.getByNameOrId(line.substring(line.indexOf("=")+1));
             meta = 0;
+        } else {
+            item = Item.getByNameOrId(line.substring(line.indexOf("=") + 1, line.indexOf("@")));
+            meta = Integer.parseInt(line.substring(line.indexOf("@")+1));
         }
-        ItemStack item = new ItemStack(itemName,1,meta);
-        System.out.println("adding line \""+line+"\" as oreDict="+oreDict+", item=" + item.getDisplayName()+" with meta="+item.getMetadata());
-        add(list,oreDict,item);
+        ItemStack stack = new ItemStack(item,1,meta);
+        add(list,oreDict,stack);
     }
     public static void add (Map<String,ItemStack> list, String oreDict, ItemStack item) {
         if (list.containsKey(oreDict)) {
