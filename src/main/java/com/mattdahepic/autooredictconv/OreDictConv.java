@@ -3,8 +3,8 @@ package com.mattdahepic.autooredictconv;
 import com.mattdahepic.autooredictconv.command.CommandConfig;
 import com.mattdahepic.autooredictconv.config.Config;
 import com.mattdahepic.autooredictconv.convert.Convert;
-import com.mattdahepic.autooredictconv.network.PacketHandler;
 import com.mattdahepic.mdecore.helpers.LogHelper;
+import com.mattdahepic.mdecore.update.UpdateChecker;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -13,6 +13,9 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.io.File;
 
@@ -38,17 +41,23 @@ public class OreDictConv {
         Config.load(new File(event.getModConfigurationDirectory(),"autooredictconvert.cfg"));
     }
     @Mod.EventHandler
-    public void init (FMLInitializationEvent event) {
-        PacketHandler.initPackets();
-    }
+    public void init (FMLInitializationEvent event) {}
     @Mod.EventHandler
     public void postInit (FMLPostInitializationEvent event) {
         LogHelper.info(MODID,"Ready to convert with "+Config.conversions.keySet().size()+" entries in the config.");
+        UpdateChecker.updateCheck(MODID,NAME,UPDATE_URL,VERSION,false,null);
     }
     @Mod.EventHandler
     public void serverStarting (FMLServerStartingEvent event) {
         event.registerServerCommand(new CommandConfig());
         mcServer = event.getServer();
-        event.getServer().addScheduledTask(new Convert());
+    }
+    @SubscribeEvent
+    public void onJoined (PlayerEvent.PlayerLoggedInEvent event) {
+        UpdateChecker.updateCheck(MODID,NAME,UPDATE_URL,VERSION,true,event.player);
+    }
+    @SubscribeEvent
+    public void onTick (TickEvent.ServerTickEvent event) {
+        Convert.convert();
     }
 }
