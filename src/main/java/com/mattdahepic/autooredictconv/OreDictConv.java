@@ -1,10 +1,11 @@
 package com.mattdahepic.autooredictconv;
 
-//mport com.mattdahepic.autooredictconv.command.CommandConfig;
 import com.mattdahepic.autooredictconv.command.CommandConfig;
 import com.mattdahepic.autooredictconv.config.Config;
+import com.mattdahepic.autooredictconv.convert.Convert;
 import com.mattdahepic.autooredictconv.network.PacketHandler;
 import com.mattdahepic.mdecore.helpers.LogHelper;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -29,6 +30,8 @@ public class OreDictConv {
     @SidedProxy(clientSide = "com.mattdahepic.autooredictconv.client.ClientProxy",serverSide = "com.mattdahepic.autooredictconv.CommonProxy")
     public static CommonProxy proxy;
 
+    public static MinecraftServer mcServer;
+
     @Mod.EventHandler
     public void preInit (FMLPreInitializationEvent event) {
         FMLCommonHandler.instance().bus().register(instance);
@@ -45,5 +48,7 @@ public class OreDictConv {
     @Mod.EventHandler
     public void serverStarting (FMLServerStartingEvent event) {
         event.registerServerCommand(new CommandConfig());
+        mcServer = event.getServer();
+        event.getServer().addScheduledTask(new Convert());
     }
 }
