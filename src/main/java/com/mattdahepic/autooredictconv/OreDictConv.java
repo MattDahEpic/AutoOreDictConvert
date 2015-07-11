@@ -1,6 +1,7 @@
 package com.mattdahepic.autooredictconv;
 
 //mport com.mattdahepic.autooredictconv.command.CommandConfig;
+import com.mattdahepic.autooredictconv.command.CommandConfig;
 import com.mattdahepic.autooredictconv.config.Config;
 import com.mattdahepic.autooredictconv.network.PacketHandler;
 import com.mattdahepic.mdecore.helpers.LogHelper;
@@ -43,6 +44,6 @@ public class OreDictConv {
     }
     @Mod.EventHandler
     public void serverStarting (FMLServerStartingEvent event) {
-        //event.registerServerCommand(new CommandConfig());
+        event.registerServerCommand(new CommandConfig());
     }
 }

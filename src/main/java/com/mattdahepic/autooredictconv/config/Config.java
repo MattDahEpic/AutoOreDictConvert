@@ -5,6 +5,7 @@ import com.mattdahepic.mdecore.helpers.LogHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -22,19 +23,16 @@ public class Config {
                 config.createNewFile();
                 addDefaults(config);
             }
-            System.out.println("got here");
             Scanner scn = new Scanner(config);
             while (scn.hasNextLine()) {
-                System.out.println("parse");
-                parse(scn.nextLine(),conversions);
+                parse(scn.nextLine());
             }
             scn.close();
         } catch (IOException e) {
             LogHelper.error(OreDictConv.MODID,e.getMessage());
         }
-        System.out.println(conversions.keySet());
     }
-    private static void parse (String line, Map<String,ItemStack> list) {
+    private static void parse (String line) {
         //oreDict=modid:itemName@metaValue
         String oreDict = line.substring(0,line.indexOf("="));
         Item item;
@@ -47,21 +45,31 @@ public class Config {
             meta = Integer.parseInt(line.substring(line.indexOf("@")+1));
         }
         ItemStack stack = new ItemStack(item,1,meta);
-        add(list,oreDict,stack);
+        add(oreDict,stack);
     }
-    public static void add (Map<String,ItemStack> list, String oreDict, ItemStack item) {
-        if (list.containsKey(oreDict)) {
-            list.replace(oreDict,item);
+    public static void add (String oreDict, ItemStack item) {
+        if (conversions.containsKey(oreDict)) {
+            conversions.replace(oreDict, item);
         } else {
-            list.put(oreDict,item);
+            conversions.put(oreDict, item);
         }
+    }
+    public static void write (String oreDict, ItemStack item) {
+        try {
+            BufferedWriter out = new BufferedWriter(new FileWriter(configFile, true));
+            out.append(oreDict + "=" + Item.itemRegistry.getNameForObject(item.getItem()) + "@" + item.getMetadata() + "\n");
+            out.close();
+        } catch (IOException e) {}
     }
     private static void addDefaults (File file) {
         try {
             FileWriter out = new FileWriter(file);
             out.write("oreIron=minecraft:iron_ore@0\n");
             out.write("oreGold=minecraft:gold_ore@0\n");
+            out.write("oreLapis=minecraft:lapis_ore@0\n");
+            out.write("oreDiamond=minecraft:diamond_ore@0\n");
+            out.write("oreEmerald=minecraft:emerald_ore@0\n");
             out.close();
-        } catch (Exception e) {}
+        } catch (IOException e) {}
     }
 }
