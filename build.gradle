@@ -32,8 +32,8 @@ minecraft {
     // simply re-run your setup task after changing the mappings to update your workspace.
     mappings = "snapshot_20141130"
     
-    //replace "@VERSION@", project.version
-    //replaceIn "AutoOreDictConvert.java"
+    replace "@VERSION@", project.version
+    replaceIn "OreDictConv.java"
 }
 
 dependencies {

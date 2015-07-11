@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 import java.io.File;
 
-@Mod(modid = OreDictConv.MODID,name = OreDictConv.NAME,version = OreDictConv.VERSION)
+@Mod(modid = OreDictConv.MODID,name = OreDictConv.NAME,version = OreDictConv.VERSION,dependencies = OreDictConv.DEPENDENCIES)
 public class OreDictConv {
     @Mod.Instance("autooredictconv")
     public static OreDictConv instance;
@@ -21,7 +21,7 @@ public class OreDictConv {
     public static final String MODID = "autooredictconv";
     public static final String NAME = "Hotkey Ore Dictionary Converter";
     public static final String VERSION = "@VERSION@";
-    public static final String DEPENDENCIES = "";
+    public static final String DEPENDENCIES = "required-after:mdecore@[1.8-1.2.2,);";
     public static final String UPDATE_URL = "";
 
     @SidedProxy(clientSide = "com.mattdahepic.autooredictconv.client.ClientProxy",serverSide = "com.mattdahepic.autooredictconv.CommonProxy")

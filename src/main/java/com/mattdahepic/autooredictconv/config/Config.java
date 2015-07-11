@@ -1,6 +1,8 @@
 package com.mattdahepic.autooredictconv.config;
 
 import com.google.common.io.Files;
+import com.mattdahepic.autooredictconv.OreDictConv;
+import com.mattdahepic.mdecore.helpers.LogHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -25,7 +27,9 @@ public class Config {
                 System.out.println("parse with line being "+line);
                 parse(line,conversions);
             }
-        } catch (Exception e) {}
+        } catch (IOException e) {
+            LogHelper.error(OreDictConv.MODID,e.getMessage());
+        }
         System.out.println(conversions.keySet());
     }
     private static void parse (String line, Map<String,ItemStack> list) {
