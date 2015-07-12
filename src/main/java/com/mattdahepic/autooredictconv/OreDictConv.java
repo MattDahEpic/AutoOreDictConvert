@@ -28,7 +28,7 @@ public class OreDictConv {
     public static final String NAME = "Hotkey Ore Dictionary Converter";
     public static final String VERSION = "@VERSION@";
     public static final String DEPENDENCIES = "required-after:mdecore@[1.8-1.2.2,);";
-    public static final String UPDATE_URL = "";
+    public static final String UPDATE_URL = "https://raw.githubusercontent.com/MattDahEpic/AutoOreDictConvert1.8/master/version.txt";
 
     @SidedProxy(clientSide = "com.mattdahepic.autooredictconv.client.ClientProxy",serverSide = "com.mattdahepic.autooredictconv.CommonProxy")
     public static CommonProxy proxy;
