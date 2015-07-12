@@ -33,6 +33,7 @@ public class Config {
         }
     }
     private static void parse (String line) {
+        if (line.startsWith("//")) return;
         //oreDict=modid:itemName@metaValue
         String oreDict = line.substring(0,line.indexOf("="));
         Item item;

@@ -8,7 +8,6 @@ import com.mattdahepic.mdecore.update.UpdateChecker;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -29,9 +28,6 @@ public class OreDictConv {
     public static final String VERSION = "@VERSION@";
     public static final String DEPENDENCIES = "required-after:mdecore@[1.8-1.2.2,);";
     public static final String UPDATE_URL = "https://raw.githubusercontent.com/MattDahEpic/AutoOreDictConvert1.8/master/version.txt";
-
-    @SidedProxy(clientSide = "com.mattdahepic.autooredictconv.client.ClientProxy",serverSide = "com.mattdahepic.autooredictconv.CommonProxy")
-    public static CommonProxy proxy;
 
     public static MinecraftServer mcServer;
 
