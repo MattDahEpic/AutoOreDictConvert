@@ -1,6 +1,6 @@
 package com.mattdahepic.autooredictconv.config;
 
-import com.mattdahepic.autooredictconv.OreDictConv;
+import com.mattdahepic.autooredictconv.AutoOreDictConv;
 import com.mattdahepic.mdecore.helpers.LogHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -29,7 +29,7 @@ public class Config {
             }
             scn.close();
         } catch (IOException e) {
-            LogHelper.error(OreDictConv.MODID,e.getMessage());
+            LogHelper.error(AutoOreDictConv.MODID,e.getMessage());
         }
     }
     private static void parse (String line) {

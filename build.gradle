@@ -33,7 +33,7 @@ minecraft {
     mappings = "snapshot_20141130"
     
     replace "@VERSION@", project.version
-    replaceIn "OreDictConv.java"
+    replaceIn "AutoOreDictConv.java"
 }
 
 dependencies {

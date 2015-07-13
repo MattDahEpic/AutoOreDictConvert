@@ -24,10 +24,6 @@ public class CommandConfig extends CommandBase {
         this.tabCompletionOptions.add("add");
     }
     @Override
-    public int compareTo (Object arg0) {
-        return 0;
-    }
-    @Override
     public String getName () {
         return "odc";
     }

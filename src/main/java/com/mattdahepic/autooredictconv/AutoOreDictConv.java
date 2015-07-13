@@ -18,13 +18,13 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.io.File;
 
-@Mod(modid = OreDictConv.MODID,name = OreDictConv.NAME,version = OreDictConv.VERSION,dependencies = OreDictConv.DEPENDENCIES)
-public class OreDictConv {
+@Mod(modid = AutoOreDictConv.MODID,name = AutoOreDictConv.NAME,version = AutoOreDictConv.VERSION,dependencies = AutoOreDictConv.DEPENDENCIES)
+public class AutoOreDictConv {
     @Mod.Instance("autooredictconv")
-    public static OreDictConv instance;
+    public static AutoOreDictConv instance;
 
     public static final String MODID = "autooredictconv";
-    public static final String NAME = "Hotkey Ore Dictionary Converter";
+    public static final String NAME = "Auto Ore Dictionary Converter";
     public static final String VERSION = "@VERSION@";
     public static final String DEPENDENCIES = "required-after:mdecore@[1.8-1.2.2,);";
     public static final String UPDATE_URL = "https://raw.githubusercontent.com/MattDahEpic/AutoOreDictConvert1.8/master/version.txt";
