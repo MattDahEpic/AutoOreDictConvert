@@ -4,8 +4,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class DumpOreDict {
-    private DumpOreDict () {}
+public class Dump {
+    private Dump() {}
     public static void dump (ICommandSender commandSender) {
         String[] oreDictNames = OreDictionary.getOreNames();
         commandSender.addChatMessage(new ChatComponentText("Dumping all Ore Dictionary entries..."));
