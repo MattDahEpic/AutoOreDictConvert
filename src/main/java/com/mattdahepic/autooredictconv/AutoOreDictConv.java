@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.oredict.OreDictionary;
 
 import java.io.File;
 
@@ -47,6 +48,7 @@ public class AutoOreDictConv {
     public void serverStarting (FMLServerStartingEvent event) {
         event.registerServerCommand(new CommandConfig());
         mcServer = event.getServer();
+        OreDictionary.rebakeMap(); //metallurgy fix
     }
     @SubscribeEvent
     public void onJoined (PlayerEvent.PlayerLoggedInEvent event) {
