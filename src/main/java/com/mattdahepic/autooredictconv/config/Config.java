@@ -1,9 +1,8 @@
 package com.mattdahepic.autooredictconv.config;
 
-import com.mattdahepic.autooredictconv.AutoOreDictConv;
-import com.mattdahepic.mdecore.helpers.LogHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -19,34 +18,39 @@ public class Config {
     public static void load (File config) {
         configFile = config;
         try {
-            if (!config.exists()) {
-                config.createNewFile();
-                addDefaults(config);
+            if (!configFile.exists()) {
+                configFile.createNewFile();
+                addDefaults(configFile);
             }
-            Scanner scn = new Scanner(config);
+            Scanner scn = new Scanner(configFile);
             while (scn.hasNextLine()) {
                 parse(scn.nextLine());
             }
             scn.close();
-        } catch (IOException e) {
-            LogHelper.error(AutoOreDictConv.MODID,e.getMessage());
-        }
+        } catch (IOException e) {}
     }
     private static void parse (String line) {
-        if (line.startsWith("//")) return;
-        //oreDict=modid:itemName@metaValue
-        String oreDict = line.substring(0,line.indexOf("="));
-        Item item;
-        int meta;
-        if (line.indexOf("@") < 0) { //no meta specified
-            item = Item.getByNameOrId(line.substring(line.indexOf("=")+1));
-            meta = 0;
-        } else {
-            item = Item.getByNameOrId(line.substring(line.indexOf("=") + 1, line.indexOf("@")));
-            meta = Integer.parseInt(line.substring(line.indexOf("@")+1));
+        try {
+            if (line.startsWith("//")) return;
+            //oreDict=modid:itemName@metaValue
+            String oreDict = line.substring(0, line.indexOf("="));
+            String modid = line.substring(line.indexOf("=") + 1, line.indexOf(":"));
+            String name;
+            int meta;
+            if (!line.contains("@")) { //no meta specified
+                name = line.substring(line.indexOf("=") + 1);
+                meta = 0;
+            } else {
+                name = line.substring(line.indexOf(":") + 1, line.indexOf("@"));
+                meta = Integer.parseInt(line.substring(line.indexOf("@") + 1));
+            }
+            ItemStack stack = new ItemStack(GameRegistry.findItem(modid, name));
+            stack.setItemDamage(meta);
+            stack.stackSize = 1;
+            add(oreDict, stack);
+        } catch (Exception e) {
+            throw new RuntimeException("Error processing entry \""+line+"\"! Does the item exist?",e);
         }
-        ItemStack stack = new ItemStack(item,1,meta);
-        add(oreDict,stack);
     }
     public static void add (String oreDict, ItemStack item) {
         if (conversions.containsKey(oreDict)) {

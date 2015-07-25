@@ -21,9 +21,9 @@ public class Convert {
                     for (int id : oreIDs) oreNames.add(OreDictionary.getOreName(id));
                     for (String name : oreNames) { //for each oredict name this item is
                         if (Config.conversions.containsKey(name)) { //do we have a conversion?
-                            ItemStack templateStack = Config.conversions.get(name);
-                            int stackSize = playerStack.stackSize;
-                            player.inventory.setInventorySlotContents(i,new ItemStack(templateStack.getItem(),stackSize,templateStack.getMetadata()));
+                            ItemStack templateStack = Config.conversions.get(name).copy();
+                            templateStack.stackSize = playerStack.stackSize;
+                            player.inventory.setInventorySlotContents(i,templateStack);
                             player.inventory.markDirty();
                         }
                     }
