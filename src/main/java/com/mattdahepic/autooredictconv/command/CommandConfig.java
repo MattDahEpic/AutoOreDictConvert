@@ -22,6 +22,7 @@ public class CommandConfig extends CommandBase {
         this.tabCompletionOptions.add("find");
         this.tabCompletionOptions.add("list");
         this.tabCompletionOptions.add("add");
+        this.tabCompletionOptions.add("reload");
         this.tabCompletionOptions.add("help");
     }
     @Override
@@ -78,12 +79,17 @@ public class CommandConfig extends CommandBase {
                 }
             } else if (args[0].equalsIgnoreCase("list")) {
                 ListEntries.list(sender);
+            } else if (args[0].equalsIgnoreCase("reload")) {
+                Reload.reload(sender);
             } else if (args[0].equalsIgnoreCase("help")) {
                 sender.addChatMessage(new ChatComponentText("To get the ore dictionary entries of the item currently held, use \"/odc detect\"."));
                 sender.addChatMessage(new ChatComponentText("To dump all ore dictionary entries to the chat and log, use \"/odc dump\"."));
                 sender.addChatMessage(new ChatComponentText("To find all items listed as the specified Ore Dictionary name, use \"/odc find <oreDictName>\"."));
                 sender.addChatMessage(new ChatComponentText("To add the currently held item as the default for it's ore dictionary entries, use \"/odc add\"."));
                 sender.addChatMessage(new ChatComponentText("To see all current configured items and their ore dictionary entries, use \"/odc list\"."));
+                return;
+            } else {
+                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED+"Not a valid argument! Use \"/odc help\" to see command usage."));
                 return;
             }
         }

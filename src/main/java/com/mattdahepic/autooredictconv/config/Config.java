@@ -52,6 +52,10 @@ public class Config {
             throw new RuntimeException("Error processing entry \""+line+"\"! Does the item exist?",e);
         }
     }
+    public static void reloadFromDisk() {
+        conversions.clear();
+        load(configFile);
+    }
     public static void add (String oreDict, ItemStack item) {
         if (conversions.containsKey(oreDict)) {
             conversions.replace(oreDict, item);
