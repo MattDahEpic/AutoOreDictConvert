@@ -56,6 +56,26 @@ public class Config {
         conversions.clear();
         load(configFile);
     }
+    public static boolean remove (String oreDict) {
+        boolean success = false;
+        try {
+            File temp = new File(configFile.getAbsolutePath()+".tmp");
+            BufferedWriter out = new BufferedWriter(new FileWriter(temp));
+            Scanner scn = new Scanner(configFile);
+            while (scn.hasNextLine()) {
+                String line = scn.nextLine();
+                if (!line.startsWith(oreDict)) out.write(line+"\n");
+            }
+            scn.close();
+            out.close();
+            configFile.delete();
+            success = temp.renameTo(configFile);
+            if (success) conversions.remove(oreDict);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return success;
+    }
     public static void add (String oreDict, ItemStack item) {
         if (conversions.containsKey(oreDict)) {
             conversions.replace(oreDict, item);

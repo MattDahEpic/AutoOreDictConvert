@@ -23,6 +23,7 @@ public class CommandConfig extends CommandBase {
         this.tabCompletionOptions.add("list");
         this.tabCompletionOptions.add("add");
         this.tabCompletionOptions.add("reload");
+        this.tabCompletionOptions.add("remove");
         this.tabCompletionOptions.add("help");
     }
     @Override
@@ -79,14 +80,26 @@ public class CommandConfig extends CommandBase {
                 }
             } else if (args[0].equalsIgnoreCase("list")) {
                 ListEntries.list(sender);
+                return;
             } else if (args[0].equalsIgnoreCase("reload")) {
                 Reload.reload(sender);
+                return;
+            } else if (args[0].equalsIgnoreCase("remove")) {
+                if (item != null) {
+                    Remove.remove(sender,item);
+                    return;
+                } else {
+                    sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED+"You\'re not holding an item!"));
+                    return;
+                }
             } else if (args[0].equalsIgnoreCase("help")) {
                 sender.addChatMessage(new ChatComponentText("To get the ore dictionary entries of the item currently held, use \"/odc detect\"."));
                 sender.addChatMessage(new ChatComponentText("To dump all ore dictionary entries to the chat and log, use \"/odc dump\"."));
                 sender.addChatMessage(new ChatComponentText("To find all items listed as the specified Ore Dictionary name, use \"/odc find <oreDictName>\"."));
                 sender.addChatMessage(new ChatComponentText("To add the currently held item as the default for it's ore dictionary entries, use \"/odc add\"."));
                 sender.addChatMessage(new ChatComponentText("To see all current configured items and their ore dictionary entries, use \"/odc list\"."));
+                sender.addChatMessage(new ChatComponentText("To reload any changes made outside of the game, use \"/odc reload\"."));
+                sender.addChatMessage(new ChatComponentText("To remove the currently held item's conversion (to replace it with another for example), use \"/odc remove\"."));
                 return;
             } else {
                 sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED+"Not a valid argument! Use \"/odc help\" to see command usage."));
