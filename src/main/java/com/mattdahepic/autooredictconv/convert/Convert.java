@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Convert {
-    public static void convert () {
+    public static void convertPlayers() {
         List<EntityPlayer> players = AutoOreDictConv.mcServer.getConfigurationManager().playerEntityList;
         for (EntityPlayer player : players) { //for all players on server
             for (int i = 0; i < player.inventory.getSizeInventory(); i++) { //and every item
@@ -30,5 +30,25 @@ public class Convert {
                 }
             }
         }
+    }
+    public static boolean convertInventory(ItemStack[] inventory) {
+        boolean success = false;
+        for (int i = 0; i < inventory.length; i++) { //for every item
+            ItemStack invStack = inventory[i];
+            if (invStack != null) { //not empty slot
+                int[] oreIDs = OreDictionary.getOreIDs(invStack);
+                List<String> oreNames = new ArrayList<String>();
+                for (int id : oreIDs) oreNames.add(OreDictionary.getOreName(id));
+                for (String name : oreNames) { //for each oredict name this item is
+                    if (Config.conversions.containsKey(name)) { //do we have a conversion?
+                        ItemStack templateStack = Config.conversions.get(name).copy();
+                        templateStack.stackSize = invStack.stackSize;
+                        inventory[i] = templateStack;
+                        success=true;
+                    }
+                }
+            }
+        }
+        return success;
     }
 }
