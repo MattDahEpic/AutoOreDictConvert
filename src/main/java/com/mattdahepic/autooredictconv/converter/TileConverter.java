@@ -8,13 +8,11 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.profiler.IPlayerUsage;
 import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
 
-public class TileConverter extends TileEntity implements ISidedInventory, IUpdatePlayerListBox {
+public class TileConverter extends TileEntity implements ISidedInventory {
     public static final String NAME = "converter";
     public static final String INVENTORY_NAME = "Auto Converter";
     public static final int SIZE = 15;
@@ -29,10 +27,6 @@ public class TileConverter extends TileEntity implements ISidedInventory, IUpdat
         return contents[slot];
     }
     @Override
-    public void openInventory(EntityPlayer player) {}
-    @Override
-    public void closeInventory(EntityPlayer player) {}
-    @Override
     public void setInventorySlotContents(int slot, ItemStack stack) {
         this.contents[slot] = stack;
         if (stack != null && stack.stackSize > this.getInventoryStackLimit()) stack.stackSize = this.getInventoryStackLimit();
@@ -43,17 +37,9 @@ public class TileConverter extends TileEntity implements ISidedInventory, IUpdat
         return 64;
     }
     @Override
-    public String getName () {
-        return INVENTORY_NAME;
-    }
+    public void openInventory() {}
     @Override
-    public IChatComponent getDisplayName () {
-        return new ChatComponentText(INVENTORY_NAME);
-    }
-    @Override
-    public boolean hasCustomName() {
-        return true;
-    }
+    public void closeInventory() {}
     @Override
     public boolean isUseableByPlayer(EntityPlayer player) {
         return true;
@@ -61,6 +47,10 @@ public class TileConverter extends TileEntity implements ISidedInventory, IUpdat
     @Override
     public ItemStack getStackInSlotOnClosing(int slot) {
         return getStackInSlot(slot);
+    }
+    @Override
+    public boolean hasCustomInventoryName () {
+        return true;
     }
     @Override
     public boolean isItemValidForSlot (int slot, ItemStack stack) {
@@ -81,6 +71,10 @@ public class TileConverter extends TileEntity implements ISidedInventory, IUpdat
             return ret;
         }
         return null;
+    }
+    @Override
+    public String getInventoryName() {
+        return INVENTORY_NAME;
     }
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
@@ -107,35 +101,20 @@ public class TileConverter extends TileEntity implements ISidedInventory, IUpdat
         }
     }
     @Override
-    public boolean canInsertItem(int slot,ItemStack item,EnumFacing dir) {
-        return dir == EnumFacing.UP;
+    public boolean canInsertItem(int slot,ItemStack item,int side) {
+        return side == 1;
     }
     @Override
-    public boolean canExtractItem(int slot,ItemStack item,EnumFacing dir) {
-        return dir == EnumFacing.DOWN && this.getStackInSlot(slot) != null;
+    public boolean canExtractItem(int slot,ItemStack item,int side) {
+        return side == 0 && this.getStackInSlot(slot) != null;
     }
     @Override
-    public int[] getSlotsForFace (EnumFacing side) {
+    public int[] getAccessibleSlotsFromSide (int side) {
         return new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
     }
     @Override
-    public int getField(int id)
-    {
-        return 0;
-    }
-    @Override
-    public void setField(int id, int value) {}
-    @Override
-    public int getFieldCount()
-    {
-        return 0;
-    }
-    @Override
-    public void clear() {
-        for (int i = 0; i < this.getSizeInventory(); ++i) this.setInventorySlotContents(i,null);
-    }
-    @Override
-    public void update () {
+    public void updateEntity () {
+        super.updateEntity();
         if (Convert.convertInventory(contents)) this.markDirty();
     }
 }

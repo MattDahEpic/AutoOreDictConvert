@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Remove {
-    public static void remove(ICommandSender sender, ItemStack item) {
+    public static void remove (ICommandSender sender, ItemStack item) {
         int[] oreIDs = OreDictionary.getOreIDs(item);
         List<String> oreDictNames = new ArrayList<String>();
         for (int id : oreIDs) oreDictNames.add(OreDictionary.getOreName(id));

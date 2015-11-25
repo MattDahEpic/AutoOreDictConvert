@@ -1,8 +1,8 @@
 package com.mattdahepic.autooredictconv.config;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -52,7 +52,7 @@ public class Config {
             throw new RuntimeException("Error processing entry \""+line+"\"! Does the item exist?",e);
         }
     }
-    public static void reloadFromDisk() {
+    public static void reloadFromDisk () {
         conversions.clear();
         load(configFile);
     }
@@ -86,7 +86,7 @@ public class Config {
     public static void write (String oreDict, ItemStack item) {
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter(configFile, true));
-            out.append(oreDict + "=" + Item.itemRegistry.getNameForObject(item.getItem()) + "@" + item.getMetadata() + "\n");
+            out.append(oreDict + "=" + Item.itemRegistry.getNameForObject(item.getItem()) + "@" + item.getItemDamage() + "\n");
             out.close();
         } catch (IOException e) {}
     }

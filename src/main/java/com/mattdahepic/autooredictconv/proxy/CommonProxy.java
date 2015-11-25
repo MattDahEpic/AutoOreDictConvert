@@ -3,9 +3,9 @@ package com.mattdahepic.autooredictconv.proxy;
 import com.mattdahepic.autooredictconv.AutoOreDictConv;
 import com.mattdahepic.autooredictconv.converter.BlockConverter;
 import com.mattdahepic.autooredictconv.converter.TileConverter;
-import net.minecraft.init.Items;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 public class CommonProxy {

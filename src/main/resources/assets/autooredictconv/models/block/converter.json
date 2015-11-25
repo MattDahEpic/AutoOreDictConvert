@@ -1,8 +1,0 @@
-{
-  "parent": "block/cube_bottom_top",
-  "textures": {
-    "top": "autooredictconv:blocks/converter_top",
-    "bottom": "autooredictconv:blocks/converter_bottom",
-    "side": "autooredictconv:blocks/converter_side"
-  }
-}
