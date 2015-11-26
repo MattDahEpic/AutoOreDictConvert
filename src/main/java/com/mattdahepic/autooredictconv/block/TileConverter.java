@@ -1,23 +1,20 @@
-package com.mattdahepic.autooredictconv.converter;
+package com.mattdahepic.autooredictconv.block;
 
-import com.mattdahepic.autooredictconv.converter.BlockConverter;
 import com.mattdahepic.autooredictconv.convert.Convert;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
 
-public class TileConverter extends TileEntity implements ISidedInventory, IUpdatePlayerListBox {
+public class TileConverter extends TileEntity implements ISidedInventory, ITickable {
     public static final String NAME = "converter";
     public static final String INVENTORY_NAME = "Auto Converter";
-    public static final int SIZE = 15;
+    public static final int SIZE = 1;
     public ItemStack[] contents = new ItemStack[SIZE];
     public TileConverter () {}
     @Override
@@ -41,10 +38,6 @@ public class TileConverter extends TileEntity implements ISidedInventory, IUpdat
     @Override
     public int getInventoryStackLimit() {
         return 64;
-    }
-    @Override
-    public String getName () {
-        return INVENTORY_NAME;
     }
     @Override
     public IChatComponent getDisplayName () {
@@ -116,7 +109,7 @@ public class TileConverter extends TileEntity implements ISidedInventory, IUpdat
     }
     @Override
     public int[] getSlotsForFace (EnumFacing side) {
-        return new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
+        return new int[]{0};
     }
     @Override
     public int getField(int id)
@@ -133,6 +126,10 @@ public class TileConverter extends TileEntity implements ISidedInventory, IUpdat
     @Override
     public void clear() {
         for (int i = 0; i < this.getSizeInventory(); ++i) this.setInventorySlotContents(i,null);
+    }
+    @Override
+    public String getCommandSenderName () {
+        return null;
     }
     @Override
     public void update () {

@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-public class Config {
+public class ConversionsConfig {
     public static Map<String,ItemStack> conversions = new HashMap<String, ItemStack>();
     static File configFile;
     public static void load (File config) {
