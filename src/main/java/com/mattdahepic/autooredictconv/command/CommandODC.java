@@ -52,8 +52,8 @@ public class CommandODC extends CommandBase {
         return commands.containsKey(command);
     }
     public static boolean canUseCommand(ICommandSender sender, int requiredPermission, String name) {
-        if (!getCommandExists(name)) {
-            return sender.canCommandSenderUseCommand(requiredPermission, "mde " + name) || sender instanceof EntityPlayerMP && requiredPermission <= 0;
+        if (getCommandExists(name)) {
+            return sender.canCommandSenderUseCommand(requiredPermission, "odc " + name) || sender instanceof EntityPlayerMP && requiredPermission <= 0;
         }
         return false;
     }

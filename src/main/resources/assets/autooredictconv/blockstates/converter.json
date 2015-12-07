@@ -1,7 +1,14 @@
 {
+  "forge_marker": 1,
   "variants": {
     "normal": {
-      "model": "autooredictconv:converter"
+      "model": "cube_bottom_top",
+      "transform": "forge:default-block",
+      "textures": {
+        "top": "autooredictconv:blocks/converter_top",
+        "bottom": "autooredictconv:blocks/converter_bottom",
+        "side": "minecraft:blocks/crafting_table_side"
+      }
     }
   }
 }

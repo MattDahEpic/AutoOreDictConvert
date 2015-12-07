@@ -10,6 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
+import net.minecraft.util.ITickable;
 
 public class TileConverter extends TileEntity implements ISidedInventory, ITickable {
     public static final String NAME = "converter";
@@ -44,6 +45,10 @@ public class TileConverter extends TileEntity implements ISidedInventory, ITicka
         return new ChatComponentText(INVENTORY_NAME);
     }
     @Override
+    public String getName () {
+        return INVENTORY_NAME;
+    }
+    @Override
     public boolean hasCustomName() {
         return true;
     }
@@ -52,8 +57,10 @@ public class TileConverter extends TileEntity implements ISidedInventory, ITicka
         return true;
     }
     @Override
-    public ItemStack getStackInSlotOnClosing(int slot) {
-        return getStackInSlot(slot);
+    public ItemStack removeStackFromSlot (int slot) {
+        ItemStack temp = getStackInSlot(slot);
+        this.contents[slot] = null;
+        return null;
     }
     @Override
     public boolean isItemValidForSlot (int slot, ItemStack stack) {
@@ -126,10 +133,6 @@ public class TileConverter extends TileEntity implements ISidedInventory, ITicka
     @Override
     public void clear() {
         for (int i = 0; i < this.getSizeInventory(); ++i) this.setInventorySlotContents(i,null);
-    }
-    @Override
-    public String getCommandSenderName () {
-        return null;
     }
     @Override
     public void update () {

@@ -3,6 +3,6 @@
   "textures": {
     "top": "autooredictconv:blocks/converter_top",
     "bottom": "autooredictconv:blocks/converter_bottom",
-    "side": "autooredictconv:blocks/converter_side"
+    "side": "minecraft:blocks/crafting_table_side"
   }
 }

@@ -27,7 +27,7 @@ public class HelpLogic implements ICommandLogic {
         sender.addChatMessage(new ChatComponentText("To add the currently held item as the default for it's ore dictionary entries, use \"/odc add\"."));
         sender.addChatMessage(new ChatComponentText("To see all current configured items and their ore dictionary entries, use \"/odc list\"."));
         sender.addChatMessage(new ChatComponentText("To reload any changes made outside of the game, use \"/odc reload\"."));
-        sender.addChatMessage(new ChatComponentText("To remove the currently held item's conversion (to replace it with another for example), use \"/odc remove\"."));
+        sender.addChatMessage(new ChatComponentText("To remove the currently held item or specified name's conversion, use \"/odc remove\"."));
     }
     public List<String> addTabCompletionOptions (ICommandSender sender, String[] args, BlockPos pos) {
         return null;
