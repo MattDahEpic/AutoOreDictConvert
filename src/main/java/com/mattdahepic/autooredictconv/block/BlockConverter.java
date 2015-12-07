@@ -24,6 +24,10 @@ public class BlockConverter extends BlockContainer {
         return new TileConverter();
     }
     @Override
+    public int getRenderType () {
+        return 3;
+    }
+    @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
         TileConverter te = (TileConverter)world.getTileEntity(pos);
         //BEGIN ITEM DROPS
