@@ -55,13 +55,11 @@ public class AutoOreDictConv {
             proxy.registerBlocks();
             proxy.registerRecipes();
             proxy.registerTiles();
+            proxy.registerRenderers();
         }
     }
     @Mod.EventHandler
     public void init (FMLInitializationEvent e) {
-        if (OptionsConfig.enableBlock) {
-            proxy.registerRenderers();
-        }
         if (OptionsConfig.enableKeypress) {
             proxy.registerKeys();
             PacketHandler.initPackets();

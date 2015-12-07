@@ -1,6 +1,6 @@
 {
   "forge_marker": 1,
-  "default": {
+  "defaults": {
     "model": "cube_bottom_top",
     "textures": {
       "top": "autooredictconv:blocks/converter_top",
