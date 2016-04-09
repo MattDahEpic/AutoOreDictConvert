@@ -1,20 +1,21 @@
 package com.mattdahepic.autooredictconv.command.logic;
 
-import com.mattdahepic.autooredictconv.config.ConversionsConfig;
+import com.mattdahepic.autooredictconv.convert.Conversions;
 import com.mattdahepic.mdecore.command.ICommandLogic;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AddLogic implements ICommandLogic {
-    public static final String USAGE = "/odc add";
     public static AddLogic instance = new AddLogic();
 
     public String getCommandName () {
@@ -24,26 +25,20 @@ public class AddLogic implements ICommandLogic {
         return 2;
     }
     public String getCommandSyntax () {
-        return USAGE;
+        return "/odc add";
     }
-    public void handleCommand (ICommandSender sender, String[] args) {
-        ItemStack item = ((EntityPlayer) sender).getHeldItem();
+    public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) {
+        ItemStack item = ((EntityPlayer) sender).getHeldItem(EnumHand.MAIN_HAND);
         if (item != null) {
-            int[] oreIDs = OreDictionary.getOreIDs(item);
             List<String> oreNames = new ArrayList<String>();
-            for (int id : oreIDs) {
-                oreNames.add(OreDictionary.getOreName(id));
-            }
+            for (int id : OreDictionary.getOreIDs(item)) oreNames.add(OreDictionary.getOreName(id));
             for (String name : oreNames) {
-                ConversionsConfig.add(name, item);
-                ConversionsConfig.write(name, item);
-                sender.addChatMessage(new ChatComponentText("Added " + EnumChatFormatting.AQUA + item.getDisplayName() + EnumChatFormatting.RESET + " as the default conversion entry for " + EnumChatFormatting.AQUA + name + EnumChatFormatting.RESET + "."));
+                Conversions.Config.addAndWwrite(name,item);
+                sender.addChatMessage(new TextComponentString("Added " + TextFormatting.AQUA + item.getDisplayName() + TextFormatting.RESET + " as the default conversion entry for " + TextFormatting.AQUA + name + TextFormatting.RESET + "."));
             }
         } else {
-            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED+"You\'re not holding an item!"));
+            sender.addChatMessage(new TextComponentString(TextFormatting.RED+"You\'re not holding an item!"));
         }
     }
-    public List<String> addTabCompletionOptions (ICommandSender sender, String[] args, BlockPos pos) {
-        return null;
-    }
+    public List<String> getTabCompletionOptions (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {return null;}
 }

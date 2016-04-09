@@ -1,13 +1,12 @@
 package com.mattdahepic.autooredictconv;
 
 import com.mattdahepic.autooredictconv.command.CommandODC;
-import com.mattdahepic.autooredictconv.config.ConversionsConfig;
 import com.mattdahepic.autooredictconv.config.OptionsConfig;
-import com.mattdahepic.autooredictconv.convert.Convert;
+import com.mattdahepic.autooredictconv.convert.Conversions;
 import com.mattdahepic.autooredictconv.keypress.PacketHandler;
 import com.mattdahepic.autooredictconv.proxy.CommonProxy;
-import com.mattdahepic.mdecore.update.UpdateChecker;
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -17,7 +16,6 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.LogManager;
@@ -25,30 +23,25 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 
-@Mod(modid = AutoOreDictConv.MODID,name = AutoOreDictConv.NAME,version = AutoOreDictConv.VERSION,dependencies = AutoOreDictConv.DEPENDENCIES)
+@Mod(modid = AutoOreDictConv.MODID,name = AutoOreDictConv.NAME,version = AutoOreDictConv.VERSION,dependencies = AutoOreDictConv.DEPENDENCIES,updateJSON = AutoOreDictConv.UPDATE_JSON)
 public class AutoOreDictConv {
-    @Mod.Instance("autooredictconv")
-    public static AutoOreDictConv instance;
-
     public static final String MODID = "autooredictconv";
     public static final String NAME = "Auto Ore Dictionary Converter";
-    public static final String VERSION = "@VERSION@";
-    public static final String DEPENDENCIES = "required-after:mdecore@[1.8.8-1.6,);";
-    public static final String UPDATE_URL = "https://raw.githubusercontent.com/MattDahEpic/Version/master/"+ MinecraftForge.MC_VERSION+"/"+MODID+".txt";
-    public static final String CLIENT_PROXY = "com.mattdahepic.autooredictconv.proxy.ClientProxy";
-    public static final String COMMON_PROXY = "com.mattdahepic.autooredictconv.proxy.CommonProxy";
+    static final String VERSION = "@VERSION@";
+    static final String DEPENDENCIES = "required-after:mdecore@[1.9-0.5,);";
+    static final String UPDATE_JSON = "https://raw.githubusercontent.com/MattDahEpic/Version/master/"+MODID+".json";
 
     public static final Logger logger = LogManager.getLogger(MODID);
 
-    @SidedProxy(clientSide = AutoOreDictConv.CLIENT_PROXY,serverSide = AutoOreDictConv.COMMON_PROXY)
+    @SidedProxy(clientSide = "com.mattdahepic.autooredictconv.proxy.ClientProxy",serverSide = "com.mattdahepic.autooredictconv.proxy.CommonProxy")
     public static CommonProxy proxy;
 
-    static File conversionsConfig;
+    private static File conversionsConfig;
     public static Block converter;
 
     @Mod.EventHandler
     public void preInit (FMLPreInitializationEvent e) {
-        FMLCommonHandler.instance().bus().register(instance);
+        MinecraftForge.EVENT_BUS.register(this);
         OptionsConfig.instance(MODID).initialize(e);
         conversionsConfig = new File(e.getModConfigurationDirectory(),"mattdahepic"+File.separator+"conversions.cfg");
         if (OptionsConfig.enableBlock) {
@@ -64,26 +57,23 @@ public class AutoOreDictConv {
             proxy.registerKeys();
             PacketHandler.initPackets();
         }
-        UpdateChecker.checkRemote(MODID,UPDATE_URL);
     }
     @Mod.EventHandler
     public void postInit (FMLPostInitializationEvent e) {
-        ConversionsConfig.load(conversionsConfig);
-        logger.info("Ready to convert with "+ ConversionsConfig.conversions.keySet().size()+" entries in the config.");
+        Conversions.Config.load(conversionsConfig);
+        logger.info("Ready to convert with "+ Conversions.conversionMap.keySet().size()+" entries in the config.");
     }
     @Mod.EventHandler
     public void serverStarting (FMLServerStartingEvent e) {
-        CommandODC.init(e);
+        CommandODC.instance.init(e);
         OreDictionary.rebakeMap(); //metallurgy fix
-    }
-    @SubscribeEvent
-    public void onJoined (PlayerEvent.PlayerLoggedInEvent e) {
-        UpdateChecker.printMessageToPlayer(MODID,e.player);
     }
     @SubscribeEvent
     public void onTick (TickEvent.ServerTickEvent e) {
         if (!OptionsConfig.enableKeypress) {
-            Convert.convertAllPlayers();
+            for (EntityPlayer p : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList()) {
+                Conversions.convert(p);
+            }
         }
     }
 }

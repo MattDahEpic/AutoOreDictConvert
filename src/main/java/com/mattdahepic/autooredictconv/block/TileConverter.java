@@ -1,70 +1,47 @@
 package com.mattdahepic.autooredictconv.block;
 
-import com.mattdahepic.autooredictconv.convert.Convert;
+import com.mattdahepic.autooredictconv.convert.Conversions;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.ITickable;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 
-public class TileConverter extends TileEntity implements ISidedInventory, ITickable {
-    public static final String NAME = "converter";
-    public static final String INVENTORY_NAME = "Auto Converter";
-    public static final int SIZE = 1;
-    public ItemStack[] contents = new ItemStack[SIZE];
-    public TileConverter () {}
-    @Override
-    public int getSizeInventory() {
-        return SIZE;
-    }
-    @Override
-    public ItemStack getStackInSlot(int slot) {
-        return contents[slot];
-    }
-    @Override
-    public void openInventory(EntityPlayer player) {}
-    @Override
-    public void closeInventory(EntityPlayer player) {}
-    @Override
-    public void setInventorySlotContents(int slot, ItemStack stack) {
-        this.contents[slot] = stack;
-        if (stack != null && stack.stackSize > this.getInventoryStackLimit()) stack.stackSize = this.getInventoryStackLimit();
-        this.markDirty();
-    }
-    @Override
-    public int getInventoryStackLimit() {
-        return 64;
-    }
-    @Override
-    public IChatComponent getDisplayName () {
-        return new ChatComponentText(INVENTORY_NAME);
-    }
-    @Override
-    public String getName () {
-        return INVENTORY_NAME;
-    }
-    @Override
-    public boolean hasCustomName() {
-        return true;
-    }
-    @Override
-    public boolean isUseableByPlayer(EntityPlayer player) {
-        return true;
-    }
+public class TileConverter extends TileEntity implements ISidedInventory {
+    private static final int SIZE = 1;
+    private ItemStack[] contents = new ItemStack[SIZE];
+
+    @Override public ITextComponent getDisplayName () { return new TextComponentString(getName()); }
+    @Override public String getName () { return "Auto Converter"; }
+    @Override public boolean hasCustomName() { return true; }
+    @Override public int getSizeInventory() {return SIZE;}
+    @Override public int getInventoryStackLimit() {return 64;}
+    @Override public void openInventory(EntityPlayer player) {}
+    @Override public void closeInventory(EntityPlayer player) {}
+    @Override public int[] getSlotsForFace (EnumFacing side) { return side == EnumFacing.UP || side == EnumFacing.DOWN ? new int[]{0} : new int[]{}; }
+    @Override public boolean isUseableByPlayer (EntityPlayer player) { return this.worldObj.getTileEntity(this.pos) != this ? false : player.getDistanceSq((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D; }
+
+    @Override public boolean canInsertItem (int slot, ItemStack stack, EnumFacing side) { return side == EnumFacing.UP && contents[slot] == null && isItemValidForSlot(slot,stack); }
+    @Override public boolean canExtractItem (int slot, ItemStack item, EnumFacing dir) { return dir == EnumFacing.DOWN && this.getStackInSlot(slot) != null; }
+    @Override public boolean isItemValidForSlot (int slot, ItemStack stack) { return Conversions.itemHasConversion(stack); }
+    @Override public ItemStack getStackInSlot (int slot) { return contents[slot]; }
+    @Override public void clear() { for (int i = 0; i < this.getSizeInventory(); ++i) this.setInventorySlotContents(i,null); }
+
     @Override
     public ItemStack removeStackFromSlot (int slot) {
         ItemStack temp = getStackInSlot(slot);
         this.contents[slot] = null;
-        return null;
+        return temp;
     }
     @Override
-    public boolean isItemValidForSlot (int slot, ItemStack stack) {
-        return true;
+    public void setInventorySlotContents (int slot, ItemStack stack) {
+        this.contents[slot] = Conversions.convert(stack);
+        if (stack != null && stack.stackSize > this.getInventoryStackLimit()) stack.stackSize = this.getInventoryStackLimit();
+        this.markDirty();
     }
     @Override
     public ItemStack decrStackSize (int slot, int amount) {
@@ -82,6 +59,7 @@ public class TileConverter extends TileEntity implements ISidedInventory, ITicka
         }
         return null;
     }
+
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
@@ -106,36 +84,8 @@ public class TileConverter extends TileEntity implements ISidedInventory, ITicka
             this.setInventorySlotContents(slot, ItemStack.loadItemStackFromNBT(stackTag));
         }
     }
-    @Override
-    public boolean canInsertItem(int slot,ItemStack item,EnumFacing dir) {
-        return dir == EnumFacing.UP;
-    }
-    @Override
-    public boolean canExtractItem(int slot,ItemStack item,EnumFacing dir) {
-        return dir == EnumFacing.DOWN && this.getStackInSlot(slot) != null;
-    }
-    @Override
-    public int[] getSlotsForFace (EnumFacing side) {
-        return new int[]{0};
-    }
-    @Override
-    public int getField(int id)
-    {
-        return 0;
-    }
-    @Override
-    public void setField(int id, int value) {}
-    @Override
-    public int getFieldCount()
-    {
-        return 0;
-    }
-    @Override
-    public void clear() {
-        for (int i = 0; i < this.getSizeInventory(); ++i) this.setInventorySlotContents(i,null);
-    }
-    @Override
-    public void update () {
-        if (Convert.convertInventory(contents)) this.markDirty();
-    }
+
+    @Override public int getField(int id) { return 0; }
+    @Override public void setField(int id, int value) {}
+    @Override public int getFieldCount() { return 0; }
 }

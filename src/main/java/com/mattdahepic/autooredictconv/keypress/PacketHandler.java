@@ -11,12 +11,11 @@ public class PacketHandler {
 
     public static void initPackets() {
         net = NetworkRegistry.INSTANCE.newSimpleChannel(AutoOreDictConv.MODID.toUpperCase());
-        registerMessage(ODCPacket.class, ODCPacket.ODCMessage.class);
+        registerMessage(ODCPacket.class, ODCPacket.ODCMessage.class,Side.SERVER);
     }
 
-    private static void registerMessage(Class packet, Class message) {
-        net.registerMessage(packet, message, nextPacketId, Side.CLIENT);
-        net.registerMessage(packet, message, nextPacketId, Side.SERVER);
+    private static void registerMessage(Class packet, Class message, Side receiver) {
+        net.registerMessage(packet, message, nextPacketId, receiver);
         ++nextPacketId;
     }
 }

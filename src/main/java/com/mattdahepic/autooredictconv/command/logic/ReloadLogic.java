@@ -1,16 +1,16 @@
 package com.mattdahepic.autooredictconv.command.logic;
 
-import com.mattdahepic.autooredictconv.config.ConversionsConfig;
+import com.mattdahepic.autooredictconv.convert.Conversions;
 import com.mattdahepic.mdecore.command.ICommandLogic;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.List;
 
 public class ReloadLogic implements ICommandLogic {
-    public static final String USAGE = "/odc list";
     public static ReloadLogic instance = new ReloadLogic();
 
     public String getCommandName () {
@@ -20,13 +20,13 @@ public class ReloadLogic implements ICommandLogic {
         return 2;
     }
     public String getCommandSyntax () {
-        return USAGE;
+        return "/odc reload";
     }
-    public void handleCommand (ICommandSender sender, String[] args) {
-        ConversionsConfig.reloadFromDisk();
-        sender.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN+"Conversions successfully reloaded from disk."));
+    public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) {
+        Conversions.Config.reloadFromDisk();
+        sender.addChatMessage(new TextComponentString(TextFormatting.GREEN+"Conversions successfully reloaded from disk."));
     }
-    public List<String> addTabCompletionOptions (ICommandSender sender, String[] args, BlockPos pos) {
+    public List<String> getTabCompletionOptions (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         return null;
     }
 }
