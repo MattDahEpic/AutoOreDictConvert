@@ -119,7 +119,7 @@ public class Conversions {
             return success;
         }
         public static void addAndWwrite(String oreDict, ItemStack item) {
-            if (!ItemHelper.isSameIgnoreStackSize(conversionMap.get(oreDict),item))
+            if (!ItemHelper.isSameIgnoreStackSize(conversionMap.get(oreDict),item,false))
                 conversionMap.put(oreDict,item);
             try {
                 BufferedWriter out = new BufferedWriter(new FileWriter(configFile, true));
