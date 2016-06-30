@@ -61,7 +61,7 @@ public class TileConverter extends TileEntity implements ISidedInventory {
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) {
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
         NBTTagList list = new NBTTagList();
         for (int i = 0; i < this.getSizeInventory(); ++i) {
@@ -73,6 +73,7 @@ public class TileConverter extends TileEntity implements ISidedInventory {
             }
         }
         nbt.setTag("Items", list);
+        return nbt;
     }
     @Override
     public void readFromNBT(NBTTagCompound nbt) {

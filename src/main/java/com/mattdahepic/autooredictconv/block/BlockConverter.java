@@ -15,9 +15,9 @@ import net.minecraft.world.World;
 public class BlockConverter extends Block implements ITileEntityProvider {
     public static final String NAME = "auto_converter";
     public BlockConverter () {
-        super(Material.dragonEgg);
+        super(Material.DRAGON_EGG);
         this.setUnlocalizedName(NAME);
-        this.setCreativeTab(CreativeTabs.tabAllSearch);
+        this.setCreativeTab(CreativeTabs.SEARCH);
     }
     @Override
     public TileEntity createNewTileEntity(World world, int meta) {

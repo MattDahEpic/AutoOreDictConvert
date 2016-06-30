@@ -21,6 +21,6 @@ public class CommonProxy {
         GameRegistry.registerTileEntity(TileConverter.class,"auto_converter");
     }
     public void registerRecipes() {
-        GameRegistry.addShapedRecipe(new ItemStack(AutoOreDictConv.converter),"aca","aba","aca",'a', Blocks.crafting_table,'b',Blocks.chest,'c', Items.string);
+        GameRegistry.addShapedRecipe(new ItemStack(AutoOreDictConv.converter),"aca","aba","aca",'a', Blocks.CRAFTING_TABLE,'b',Blocks.CHEST,'c', Items.STRING);
     }
 }

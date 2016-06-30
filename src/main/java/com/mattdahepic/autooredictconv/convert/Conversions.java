@@ -123,7 +123,7 @@ public class Conversions {
                 conversionMap.put(oreDict,item);
             try {
                 BufferedWriter out = new BufferedWriter(new FileWriter(configFile, true));
-                out.append(oreDict + "=" + Item.itemRegistry.getNameForObject(item.getItem()) + "@" + item.getMetadata() + "\n");
+                out.append(oreDict + "=" + Item.REGISTRY.getNameForObject(item.getItem()) + "@" + item.getMetadata() + "\n");
                 out.close();
             } catch (IOException e) {
             }
