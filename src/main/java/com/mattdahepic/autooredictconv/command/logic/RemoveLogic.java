@@ -47,6 +47,7 @@ public class RemoveLogic implements ICommandLogic {
             if (Conversions.conversionMap.containsKey(name)) {
                 if (Conversions.Config.remove(name)) {
                     sender.addChatMessage(new TextComponentString(TextFormatting.GREEN+"Successfully removed conversion for "+TextFormatting.AQUA+name+TextFormatting.GREEN+"!"));
+                    return;
                 }
             }
             sender.addChatMessage(new TextComponentString(TextFormatting.RED+"Did not remove conversion for "+TextFormatting.AQUA+name+TextFormatting.RED+"!"));

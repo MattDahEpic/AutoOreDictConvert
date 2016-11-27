@@ -6,7 +6,7 @@ import com.mattdahepic.mdecore.command.AbstractCommand;
 public class CommandODC extends AbstractCommand {
     public static CommandODC instance = new CommandODC();
 
-    static {
+    public CommandODC () {
         registerCommandLogic(HelpLogic.instance);
         registerCommandLogic(DetectLogic.instance);
         registerCommandLogic(DumpLogic.instance);

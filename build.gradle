@@ -11,12 +11,12 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.10.2-1.0"
+version = "1.10.2-1.1"
 group = "com.mattdahepic.autooredictconv"
 archivesBaseName = "autooredictconv"
 
 minecraft {
-    version = "1.10.2-12.18.0.2005-1.10.0"
+    version = "1.10.2-12.18.2.2113"
     runDir = "run"
 
     replace "@VERSION@", project.version

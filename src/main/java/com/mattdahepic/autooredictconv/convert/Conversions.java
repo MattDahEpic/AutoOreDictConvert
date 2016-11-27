@@ -5,6 +5,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.items.wrapper.PlayerInvWrapper;
 import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nonnull;
@@ -26,12 +28,14 @@ public class Conversions {
     }
     /* CONVERSION */
     public static void convert (EntityPlayer player) {
-        for (int i = 0; i < player.inventory.getSizeInventory(); i++) { //and every item
+        for (int i = 0; i < player.inventory.getSizeInventory(); i++) { //for every item
             ItemStack playerStack = player.inventory.getStackInSlot(i);
             if (playerStack != null) { //not empty slot
                 if (itemHasConversion(playerStack)) {
-                    player.inventory.setInventorySlotContents(i, convert(playerStack));
-                    player.inventory.markDirty();
+                    ItemStack convertedItem = convert(playerStack);
+                    player.inventory.setInventorySlotContents(i, null); //clear out the converted items slot
+                    ItemHandlerHelper.insertItemStacked(new PlayerInvWrapper(player.inventory),convertedItem,false); //put the converted items in, stacking with items already there
+                    player.inventory.markDirty(); //refresh the client
                 }
             }
         }
