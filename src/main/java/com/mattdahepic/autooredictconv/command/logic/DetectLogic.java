@@ -17,7 +17,7 @@ import java.util.List;
 public class DetectLogic implements ICommandLogic {
     public static DetectLogic instance = new DetectLogic();
 
-    public String getCommandName () {
+    public String getCommandLogicName () {
         return "detect";
     }
     public int getPermissionLevel () {
@@ -38,5 +38,5 @@ public class DetectLogic implements ICommandLogic {
             sender.addChatMessage(new TextComponentString(TextFormatting.RED+"You\'re not holding an item!"));
         }
     }
-    public List<String> getTabCompletionOptions (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {return null;}
+    public List<String> getTabCompletionList (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {return null;}
 }

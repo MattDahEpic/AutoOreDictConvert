@@ -16,7 +16,7 @@ import java.util.List;
 public class FindLogic implements ICommandLogic {
     public static FindLogic instance = new FindLogic();
 
-    public String getCommandName () {
+    public String getCommandLogicName () {
         return "find";
     }
     public int getPermissionLevel () {
@@ -41,7 +41,7 @@ public class FindLogic implements ICommandLogic {
             sender.addChatMessage(new TextComponentString("There are no items under this name or this name is not registered!"));
         }
     }
-    public List<String> getTabCompletionOptions (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
+    public List<String> getTabCompletionList (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         return args.length == 1 ? AbstractCommand.getListOfStringsMatchingLastWord(args,OreDictionary.getOreNames()) : null;
     }
 }

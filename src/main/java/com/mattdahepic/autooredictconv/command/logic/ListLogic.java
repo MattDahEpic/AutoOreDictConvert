@@ -14,7 +14,7 @@ import java.util.List;
 public class ListLogic implements ICommandLogic {
     public static ListLogic instance = new ListLogic();
 
-    public String getCommandName () {
+    public String getCommandLogicName () {
         return "list";
     }
     public int getPermissionLevel () {
@@ -30,7 +30,7 @@ public class ListLogic implements ICommandLogic {
             sender.addChatMessage(new TextComponentString(TextFormatting.AQUA+entry+TextFormatting.RESET+"="+TextFormatting.GREEN+item.getDisplayName()));
         }
     }
-    public List<String> getTabCompletionOptions (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
+    public List<String> getTabCompletionList (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         return null;
     }
 }

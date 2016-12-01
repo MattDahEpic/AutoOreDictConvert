@@ -19,7 +19,7 @@ import java.util.List;
 public class RemoveLogic implements ICommandLogic {
     public static RemoveLogic instance = new RemoveLogic();
 
-    public String getCommandName () {
+    public String getCommandLogicName () {
         return "remove";
     }
     public int getPermissionLevel () {
@@ -55,7 +55,7 @@ public class RemoveLogic implements ICommandLogic {
             sender.addChatMessage(new TextComponentString(TextFormatting.RED+"You\'re not holding an item and didn't specify a name to remove!"));
         }
     }
-    public List<String> getTabCompletionOptions (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
+    public List<String> getTabCompletionList (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         return args.length == 2 ? AbstractCommand.getListOfStringsMatchingLastWord(args,Conversions.conversionMap.keySet()) : null;
     }
 }

@@ -12,7 +12,7 @@ import java.util.List;
 public class DumpLogic implements ICommandLogic {
     public static DumpLogic instance = new DumpLogic();
 
-    public String getCommandName () {
+    public String getCommandLogicName () {
         return "dump";
     }
     public int getPermissionLevel () {
@@ -28,5 +28,5 @@ public class DumpLogic implements ICommandLogic {
             sender.addChatMessage(new TextComponentString(oreDictNames[i]));
         }
     }
-    public List<String> getTabCompletionOptions (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {return null;}
+    public List<String> getTabCompletionList (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {return null;}
 }
