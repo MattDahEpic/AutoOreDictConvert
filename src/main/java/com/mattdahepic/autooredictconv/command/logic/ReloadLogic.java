@@ -13,7 +13,7 @@ import java.util.List;
 public class ReloadLogic implements ICommandLogic {
     public static ReloadLogic instance = new ReloadLogic();
 
-    public String getCommandLogicName () {
+    public String getCommandName () {
         return "reload";
     }
     public int getPermissionLevel () {
@@ -24,7 +24,7 @@ public class ReloadLogic implements ICommandLogic {
     }
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) {
         Conversions.Config.reloadFromDisk();
-        sender.addChatMessage(new TextComponentString(TextFormatting.GREEN+"Conversions successfully reloaded from disk."));
+        sender.sendMessage(new TextComponentString(TextFormatting.GREEN+"Conversions successfully reloaded from disk."));
     }
     public List<String> getTabCompletionList (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         return null;

@@ -8,12 +8,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 
 public class TileConverter extends TileEntity implements ISidedInventory {
     private static final int SIZE = 1;
-    private ItemStack[] contents = new ItemStack[SIZE];
+    private NonNullList<ItemStack> contents = NonNullList.withSize(SIZE,ItemStack.EMPTY);
 
     @Override public ITextComponent getDisplayName () { return new TextComponentString(getName()); }
     @Override public String getName () { return "Auto Converter"; }
@@ -23,41 +24,39 @@ public class TileConverter extends TileEntity implements ISidedInventory {
     @Override public void openInventory(EntityPlayer player) {}
     @Override public void closeInventory(EntityPlayer player) {}
     @Override public int[] getSlotsForFace (EnumFacing side) { return side == EnumFacing.UP || side == EnumFacing.DOWN ? new int[]{0} : new int[]{}; }
-    @Override public boolean isUseableByPlayer (EntityPlayer player) { return this.worldObj.getTileEntity(this.pos) != this ? false : player.getDistanceSq((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D; }
+    @Override public boolean isEmpty () {return contents.isEmpty();}
+    @Override public boolean isUsableByPlayer (EntityPlayer player) { return this.world.getTileEntity(this.pos) != this ? false : player.getDistanceSq((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D; }
 
-    @Override public boolean canInsertItem (int slot, ItemStack stack, EnumFacing side) { return side == EnumFacing.UP && contents[slot] == null && isItemValidForSlot(slot,stack); }
+    @Override public boolean canInsertItem (int slot, ItemStack stack, EnumFacing side) { return side == EnumFacing.UP && contents.get(slot) == ItemStack.EMPTY && isItemValidForSlot(slot,stack); }
     @Override public boolean canExtractItem (int slot, ItemStack item, EnumFacing dir) { return dir == EnumFacing.DOWN && this.getStackInSlot(slot) != null; }
-    @Override public boolean isItemValidForSlot (int slot, ItemStack stack) { return Conversions.itemHasConversion(stack); }
-    @Override public ItemStack getStackInSlot (int slot) { return contents[slot]; }
-    @Override public void clear() { for (int i = 0; i < this.getSizeInventory(); ++i) this.setInventorySlotContents(i,null); }
+    @Override public boolean isItemValidForSlot (int slot, ItemStack stack) { return slot < contents.size() && Conversions.itemHasConversion(stack); }
+    @Override public ItemStack getStackInSlot (int slot) { return slot < contents.size() ? contents.get(slot) : ItemStack.EMPTY; }
+    @Override public void clear() { for (int i = 0; i < this.getSizeInventory(); ++i) this.setInventorySlotContents(i,ItemStack.EMPTY); }
 
     @Override
     public ItemStack removeStackFromSlot (int slot) {
         ItemStack temp = getStackInSlot(slot);
-        this.contents[slot] = null;
+        contents.set(slot,ItemStack.EMPTY);
         return temp;
     }
     @Override
     public void setInventorySlotContents (int slot, ItemStack stack) {
-        this.contents[slot] = Conversions.convert(stack);
-        if (stack != null && stack.stackSize > this.getInventoryStackLimit()) stack.stackSize = this.getInventoryStackLimit();
+        contents.set(slot,Conversions.convert(stack));
+        if (stack != null && stack.getCount() > this.getInventoryStackLimit()) stack.setCount(this.getInventoryStackLimit());
         this.markDirty();
     }
     @Override
     public ItemStack decrStackSize (int slot, int amount) {
-        if (contents[slot] != null) {
-            ItemStack ret;
-            if (contents[slot].stackSize <= amount) { //not enough items
-                ret = contents[slot];
-                contents[slot] = null;
-            } else { //enough items
-                ret = contents[slot].splitStack(amount);
-                if (contents[slot].stackSize == 0) contents[slot] = null;
-            }
-            this.markDirty();
-            return ret;
+        ItemStack ret;
+        if (contents.get(slot).getCount() <= amount) { //not enough items
+            ret = contents.get(slot);
+            contents.set(slot,ItemStack.EMPTY);
+        } else { //enough items
+            ret = contents.get(slot).splitStack(amount);
+            if (contents.get(slot).getCount() == 0) contents.set(slot,ItemStack.EMPTY);
         }
-        return null;
+        this.markDirty();
+        return ret;
     }
 
     @Override
@@ -82,7 +81,7 @@ public class TileConverter extends TileEntity implements ISidedInventory {
         for (int i = 0; i < list.tagCount(); ++i) {
             NBTTagCompound stackTag = list.getCompoundTagAt(i);
             int slot = stackTag.getByte("Slot") & 255;
-            this.setInventorySlotContents(slot, ItemStack.loadItemStackFromNBT(stackTag));
+            this.setInventorySlotContents(slot, new ItemStack(stackTag));
         }
     }
 

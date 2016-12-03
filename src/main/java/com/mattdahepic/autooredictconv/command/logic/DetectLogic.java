@@ -17,7 +17,7 @@ import java.util.List;
 public class DetectLogic implements ICommandLogic {
     public static DetectLogic instance = new DetectLogic();
 
-    public String getCommandLogicName () {
+    public String getCommandName () {
         return "detect";
     }
     public int getPermissionLevel () {
@@ -29,13 +29,13 @@ public class DetectLogic implements ICommandLogic {
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) {
         ItemStack item = ((EntityPlayer) sender).getHeldItem(EnumHand.MAIN_HAND);
         if (item != null) {
-            sender.addChatMessage(new TextComponentString("Ore dictionary names for item \"" + TextFormatting.AQUA+ Item.REGISTRY.getNameForObject(item.getItem()) + "@" + item.getItemDamage() + TextFormatting.RESET+"\" are:"));
+            sender.sendMessage(new TextComponentString("Ore dictionary names for item \"" + TextFormatting.AQUA+ Item.REGISTRY.getNameForObject(item.getItem()) + "@" + item.getItemDamage() + TextFormatting.RESET+"\" are:"));
 
             for (int i : OreDictionary.getOreIDs(item)) { //print names
-                sender.addChatMessage(new TextComponentString(OreDictionary.getOreName(i)));
+                sender.sendMessage(new TextComponentString(OreDictionary.getOreName(i)));
             }
         } else {
-            sender.addChatMessage(new TextComponentString(TextFormatting.RED+"You\'re not holding an item!"));
+            sender.sendMessage(new TextComponentString(TextFormatting.RED+"You\'re not holding an item!"));
         }
     }
     public List<String> getTabCompletionList (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {return null;}

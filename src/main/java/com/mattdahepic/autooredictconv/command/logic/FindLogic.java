@@ -16,7 +16,7 @@ import java.util.List;
 public class FindLogic implements ICommandLogic {
     public static FindLogic instance = new FindLogic();
 
-    public String getCommandLogicName () {
+    public String getCommandName () {
         return "find";
     }
     public int getPermissionLevel () {
@@ -27,18 +27,18 @@ public class FindLogic implements ICommandLogic {
     }
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) {
         if (args.length < 2) {
-            sender.addChatMessage(new TextComponentString(TextFormatting.RED+"You didn\'t specify a Ore Dictionary name! Use \"/odc help\" for help."));
+            sender.sendMessage(new TextComponentString(TextFormatting.RED+"You didn\'t specify a Ore Dictionary name! Use \"/odc help\" for help."));
             return;
         }
         //args[1] = oreDictName
         List<ItemStack> itemsUnderOreDict = OreDictionary.getOres(args[1]);
         if (!itemsUnderOreDict.isEmpty()) {
-            sender.addChatMessage(new TextComponentString("Ore names under entry " + TextFormatting.AQUA + args[1] + TextFormatting.RESET + " are:"));
+            sender.sendMessage(new TextComponentString("Ore names under entry " + TextFormatting.AQUA + args[1] + TextFormatting.RESET + " are:"));
             for (ItemStack i : itemsUnderOreDict) {
-                sender.addChatMessage(new TextComponentString(ItemHelper.getNameFromItemStack(i)));
+                sender.sendMessage(new TextComponentString(ItemHelper.getNameFromItemStack(i)));
             }
         } else {
-            sender.addChatMessage(new TextComponentString("There are no items under this name or this name is not registered!"));
+            sender.sendMessage(new TextComponentString("There are no items under this name or this name is not registered!"));
         }
     }
     public List<String> getTabCompletionList (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {

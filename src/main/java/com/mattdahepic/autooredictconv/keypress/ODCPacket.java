@@ -11,7 +11,7 @@ public class ODCPacket implements IMessageHandler<ODCPacket.ODCMessage,IMessage>
     public IMessage onMessage(ODCPacket.ODCMessage message, MessageContext ctx) {
         if(ctx.side.isServer()) {
             Conversions.convert(ctx.getServerHandler().playerEntity);
-            ctx.getServerHandler().playerEntity.addChatMessage(new TextComponentString("Converting!"));
+            ctx.getServerHandler().playerEntity.sendMessage(new TextComponentString("Converting!"));
         }
         return null;
     }

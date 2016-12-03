@@ -18,7 +18,7 @@ import java.util.List;
 public class AddLogic implements ICommandLogic {
     public static AddLogic instance = new AddLogic();
 
-    public String getCommandLogicName () {
+    public String getCommandName () {
         return "add";
     }
     public int getPermissionLevel () {
@@ -34,10 +34,10 @@ public class AddLogic implements ICommandLogic {
             for (int id : OreDictionary.getOreIDs(item)) oreNames.add(OreDictionary.getOreName(id));
             for (String name : oreNames) {
                 Conversions.Config.addAndWwrite(name,item);
-                sender.addChatMessage(new TextComponentString("Added " + TextFormatting.AQUA + item.getDisplayName() + TextFormatting.RESET + " as the default conversion entry for " + TextFormatting.AQUA + name + TextFormatting.RESET + "."));
+                sender.sendMessage(new TextComponentString("Added " + TextFormatting.AQUA + item.getDisplayName() + TextFormatting.RESET + " as the default conversion entry for " + TextFormatting.AQUA + name + TextFormatting.RESET + "."));
             }
         } else {
-            sender.addChatMessage(new TextComponentString(TextFormatting.RED+"You\'re not holding an item!"));
+            sender.sendMessage(new TextComponentString(TextFormatting.RED+"You\'re not holding an item!"));
         }
     }
     public List<String> getTabCompletionList (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {return null;}

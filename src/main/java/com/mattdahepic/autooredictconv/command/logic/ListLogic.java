@@ -14,7 +14,7 @@ import java.util.List;
 public class ListLogic implements ICommandLogic {
     public static ListLogic instance = new ListLogic();
 
-    public String getCommandLogicName () {
+    public String getCommandName () {
         return "list";
     }
     public int getPermissionLevel () {
@@ -24,10 +24,10 @@ public class ListLogic implements ICommandLogic {
         return "/odc list";
     }
     public void handleCommand (MinecraftServer server, ICommandSender sender, String[] args) {
-        sender.addChatMessage(new TextComponentString("The configured conversions are:"));
+        sender.sendMessage(new TextComponentString("The configured conversions are:"));
         for (String entry : Conversions.conversionMap.keySet()) {
             ItemStack item = Conversions.conversionMap.get(entry);
-            sender.addChatMessage(new TextComponentString(TextFormatting.AQUA+entry+TextFormatting.RESET+"="+TextFormatting.GREEN+item.getDisplayName()));
+            sender.sendMessage(new TextComponentString(TextFormatting.AQUA+entry+TextFormatting.RESET+"="+TextFormatting.GREEN+item.getDisplayName()));
         }
     }
     public List<String> getTabCompletionList (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {

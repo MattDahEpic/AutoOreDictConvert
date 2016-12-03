@@ -19,7 +19,7 @@ import java.util.List;
 public class RemoveLogic implements ICommandLogic {
     public static RemoveLogic instance = new RemoveLogic();
 
-    public String getCommandLogicName () {
+    public String getCommandName () {
         return "remove";
     }
     public int getPermissionLevel () {
@@ -36,23 +36,23 @@ public class RemoveLogic implements ICommandLogic {
             for (String name : oreDictNames) {
                 if (Conversions.conversionMap.containsKey(name)) {
                     if (Conversions.Config.remove(name)) {
-                        sender.addChatMessage(new TextComponentString(TextFormatting.GREEN+"Successfully removed conversion for "+ TextFormatting.AQUA+name+TextFormatting.GREEN+"!"));
+                        sender.sendMessage(new TextComponentString(TextFormatting.GREEN+"Successfully removed conversion for "+ TextFormatting.AQUA+name+TextFormatting.GREEN+"!"));
                         continue;
                     }
                 }
-                sender.addChatMessage(new TextComponentString(TextFormatting.RED+"Did not remove conversion for "+TextFormatting.AQUA+name+TextFormatting.RED+"!"));
+                sender.sendMessage(new TextComponentString(TextFormatting.RED+"Did not remove conversion for "+TextFormatting.AQUA+name+TextFormatting.RED+"!"));
             }
         } else if (args.length == 2) {
             String name = args[1];
             if (Conversions.conversionMap.containsKey(name)) {
                 if (Conversions.Config.remove(name)) {
-                    sender.addChatMessage(new TextComponentString(TextFormatting.GREEN+"Successfully removed conversion for "+TextFormatting.AQUA+name+TextFormatting.GREEN+"!"));
+                    sender.sendMessage(new TextComponentString(TextFormatting.GREEN+"Successfully removed conversion for "+TextFormatting.AQUA+name+TextFormatting.GREEN+"!"));
                     return;
                 }
             }
-            sender.addChatMessage(new TextComponentString(TextFormatting.RED+"Did not remove conversion for "+TextFormatting.AQUA+name+TextFormatting.RED+"!"));
+            sender.sendMessage(new TextComponentString(TextFormatting.RED+"Did not remove conversion for "+TextFormatting.AQUA+name+TextFormatting.RED+"!"));
         } else {
-            sender.addChatMessage(new TextComponentString(TextFormatting.RED+"You\'re not holding an item and didn't specify a name to remove!"));
+            sender.sendMessage(new TextComponentString(TextFormatting.RED+"You\'re not holding an item and didn't specify a name to remove!"));
         }
     }
     public List<String> getTabCompletionList (MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {

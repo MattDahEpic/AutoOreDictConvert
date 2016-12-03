@@ -17,7 +17,7 @@ public class CommandODC extends AbstractCommand {
         registerCommandLogic(RemoveLogic.instance);
     }
     @Override
-    public String getCommandName () {
+    public String getName () {
         return "odc";
     }
 }
