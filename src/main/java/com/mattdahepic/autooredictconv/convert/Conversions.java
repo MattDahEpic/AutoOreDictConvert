@@ -23,7 +23,9 @@ public class Conversions {
         if (stack == ItemStack.EMPTY) return false;
         for (int id : OreDictionary.getOreIDs(stack)) {
             String oreName = OreDictionary.getOreName(id);
-            if (conversionMap.containsKey(oreName)) return true;
+            if (conversionMap.containsKey(oreName) && !ItemHelper.isSameIgnoreStackSize(conversionMap.get(oreName),stack,false)) { //if its a valid conversion and its not already the output item
+                return true;
+            }
         }
         return false;
     }
