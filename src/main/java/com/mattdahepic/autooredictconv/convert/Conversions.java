@@ -20,7 +20,7 @@ public class Conversions {
     public static Map<String,ItemStack> conversionMap = new HashMap<String, ItemStack>();
     /* HELPERS */
     public static boolean itemHasConversion (ItemStack stack) {
-        if (stack == ItemStack.EMPTY) return false;
+        if (stack.isEmpty()) return false;
         for (int id : OreDictionary.getOreIDs(stack)) {
             String oreName = OreDictionary.getOreName(id);
             if (conversionMap.containsKey(oreName) && !ItemHelper.isSameIgnoreStackSize(conversionMap.get(oreName),stack,false)) { //if its a valid conversion and its not already the output item
@@ -33,7 +33,7 @@ public class Conversions {
     public static void convert (EntityPlayer player) {
         for (int i = 0; i < player.inventory.getSizeInventory(); i++) { //for every item
             ItemStack playerStack = player.inventory.getStackInSlot(i);
-            if (playerStack != ItemStack.EMPTY) { //not empty slot
+            if (!playerStack.isEmpty()) { //not empty slot
                 if (itemHasConversion(playerStack)) {
                     ItemStack convertedItem = convert(playerStack);
                     player.inventory.setInventorySlotContents(i, ItemStack.EMPTY); //clear out the converted items slot
