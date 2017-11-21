@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ACA",
+    "ABA",
+    "ACA"
+  ],
+  "key": {
+    "A": {
+      "type": "forge:ore_dict",
+      "ore": "craftingTableWood"
+    },
+    "B": {
+      "type": "forge:ore_dict",
+      "ore": "chestWood"
+    },
+    "C": {
+      "item": "minecraft:string"
+    }
+  },
+  "result": {
+    "item": "autooredictconv:auto_converter"
+  }
+}
