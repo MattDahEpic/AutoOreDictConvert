@@ -34,6 +34,7 @@ public class AddLogic implements ICommandLogic {
             for (int id : OreDictionary.getOreIDs(item)) oreNames.add(OreDictionary.getOreName(id));
             for (String name : oreNames) {
                 Conversions.Config.addAndWwrite(name,item);
+                Conversions.Config.reloadFromDisk();
                 sender.sendMessage(new TextComponentString("Added " + TextFormatting.AQUA + item.getDisplayName() + TextFormatting.RESET + " as the default conversion entry for " + TextFormatting.AQUA + name + TextFormatting.RESET + "."));
             }
         } else {
