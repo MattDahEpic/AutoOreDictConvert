@@ -7,18 +7,16 @@
   ],
   "key": {
     "A": {
-      "type": "forge:ore_dict",
-      "ore": "craftingTableWood"
+      "tag": "minecraft:planks"
     },
     "B": {
-      "type": "forge:ore_dict",
-      "ore": "chestWood"
+      "tag": "forge:chests"
     },
     "C": {
       "item": "minecraft:string"
     }
   },
   "result": {
-    "item": "autooredictconv:auto_converter"
+    "item": "autooredictconv:converter"
   }
 }
