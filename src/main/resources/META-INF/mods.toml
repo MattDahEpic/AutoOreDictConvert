@@ -1,0 +1,35 @@
+modLoader="javafml"
+loaderVersion="[34,)"
+license="All rights reserved"
+issueTrackerURL="https://github.com/MattDahEpic/AutoOreDictConvert/issues"
+
+[[mods]]
+    modId="autooredictconv"
+    version="${file.jarVersion}"
+    displayName="Auto Ore Dictionary Converter"
+    updateJSONURL="https://raw.githubusercontent.com/MattDahEpic/Version/master/autooredictconv.json"
+    displayURL="https://www.curseforge.com/minecraft/mc-mods/auto-ore-dictionary-converter"
+    credits="Thanks to the entire open source mod community from which I used code."
+    authors="MattDahEpic"
+    description='''
+    Converts specified ore dictionary items automatically or on keybinding.
+    '''
+
+    [[dependencies.autooredictconv]]
+        modId="forge"
+        mandatory=true
+        versionRange="[34,)"
+        ordering="NONE"
+        side="BOTH"
+    [[dependencies.autooredictconv]]
+        modId="minecraft"
+        mandatory=true
+        versionRange="[1.16.3]"
+        ordering="NONE"
+        side="BOTH"
+    [[dependencies.autooredictconv]]
+        modId="mdecore"
+        mandatory=true
+        versionRange="[16.0.1,)"
+        ordering="NONE"
+        side="BOTH"

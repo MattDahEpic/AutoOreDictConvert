@@ -1,0 +1,69 @@
+package com.mattdahepic.autooredictconv.common.config;
+
+import com.mattdahepic.autooredictconv.common.convert.Conversions;
+import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Scanner;
+
+public class ConversionsConfig {
+    public static File file;
+    public static void load() {
+        try {
+            if (!file.exists()) {
+                file.createNewFile();
+                writeDefaults(file);
+            }
+            Scanner scn = new Scanner(file);
+            while (scn.hasNextLine()) {
+                parse(scn.nextLine());
+            }
+            scn.close();
+        } catch (IOException ignored) {}
+    }
+
+    public static void save() {
+        try (BufferedWriter writer = Files.newBufferedWriter(file.toPath())) {
+            Conversions.conversionMap.forEach((tag, item) -> {
+                try {
+                    writer.write(tag+"="+item.getRegistryName()+"\n");
+                } catch (IOException ignored) {}
+            });
+        } catch (IOException ignored) {}
+    }
+    private static void parse(String line) {
+        try {
+            if (line.startsWith("#")) return;
+            if (line.equals("")) return;
+            //tag:name=modid:item
+            ResourceLocation tag = ResourceLocation.create(line.substring(0, line.indexOf("=")),':');
+            ResourceLocation itemLoc = ResourceLocation.create(line.substring(line.indexOf("=") + 1),':');
+
+            Item item = ForgeRegistries.ITEMS.getValue(itemLoc);
+            Conversions.conversionMap.put(tag,item);
+        } catch (Exception e) {
+            throw new RuntimeException("Error processing entry \"" + line + "\"! Does the item exist?", e);
+        }
+    }
+    public static void reload() {
+        Conversions.conversionMap.clear();
+        load();
+    }
+
+    private static void writeDefaults(File file) {
+        try (FileWriter out = new FileWriter(file)) {
+            out.write("# Default conversions config\n");
+            out.write("forge:ores/iron=minecraft:iron_ore\n");
+            out.write("forge:ores/gold=minecraft:gold_ore\n");
+            out.write("forge:ores/lapis=minecraft:lapis_ore\n");
+            out.write("forge:ores/diamond=minecraft:diamond_ore\n");
+            out.write("forge:ores/emerald=minecraft:emerald_ore\n");
+        } catch (IOException e) {}
+    }
+}

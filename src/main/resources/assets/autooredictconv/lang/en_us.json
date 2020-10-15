@@ -1,0 +1,22 @@
+{
+  "autooredictconv.command.odc._each": "- §6{0}",
+  "autooredictconv.command.odc._each_pair": "- §a{0}§r: §6{1}§r",
+  "autooredictconv.command.odc._must_be_holding": "You must be holding an item!",
+  "autooredictconv.command.odc._no_tag": "The tag {0} does not exist.",
+  "autooredictconv.command.odc.help.0": "/odc help - shows this message",
+  "autooredictconv.command.odc.help.1": "/odc detect - shows the tag names for the currently held item",
+  "autooredictconv.command.odc.help.2": "/odc dump - lists out all item tags",
+  "autooredictconv.command.odc.help.3": "/odc find <tag> - lists items with the specified tag",
+  "autooredictconv.command.odc.help.4": "/odc list - lists the currently configured conversions",
+  "autooredictconv.command.odc.detect": "Tags for item §b{0}§r are:",
+  "autooredictconv.command.odc.dump": "Listing all item tags...",
+  "autooredictconv.command.odc.find": "The tag §b{0}§r contains the items:",
+  "autooredictconv.command.odc.list": "The configured conversions are:",
+  "autooredictconv.command.odc.add": "Added §6{0}§r as the default conversion for the §6{1}§r tag",
+  "autooredictconv.command.odc.reload": "§aConversions reloaded!",
+  "autooredictconv.command.odc.remove": "Removed conversion with tag §c{0}§r, if it exists",
+
+  "autooredictconv.converting": "Converting!",
+
+  "block.autooredictconv.converter": "Auto Converter"
+}

@@ -1,23 +1,14 @@
 package com.mattdahepic.autooredictconv.proxy;
 
-import com.mattdahepic.autooredictconv.AutoOreDictConv;
-import com.mattdahepic.autooredictconv.block.BlockConverter;
-import com.mattdahepic.autooredictconv.keypress.KeyHandler;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import com.mattdahepic.autooredictconv.common.AutoOreDictConv;
+import com.mattdahepic.autooredictconv.common.block.ConverterBlock;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+//@SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
-    @Override
+    /*@Override
     public void registerRenderers() {
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(AutoOreDictConv.converter), 0, new ModelResourceLocation(AutoOreDictConv.MODID + ":" + BlockConverter.NAME, "inventory"));
-    }
-    @Override
-    public void registerKeys () {
-        MinecraftForge.EVENT_BUS.register(new KeyHandler());
-    }
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(AutoOreDictConv.converter), 0, new ModelResourceLocation(AutoOreDictConv.MODID + ":" + ConverterBlock.NAME, "inventory"));
+    }*/
 }
