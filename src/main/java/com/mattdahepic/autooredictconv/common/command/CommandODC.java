@@ -79,7 +79,7 @@ public class CommandODC {
         ITag<Item> tag = ItemTags.getCollection().get(loc);
         if (tag == null) throw new SimpleCommandExceptionType(new TranslationTextComponent("autooredictconv.command.odc._no_tag",loc)).create();
         ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc.find",loc),true);
-        tag.func_230236_b_().forEach(i -> {
+        tag.getAllElements().forEach(i -> {
             ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc._each",i.getRegistryName()),true);
         });
         return Command.SINGLE_SUCCESS;
@@ -95,6 +95,7 @@ public class CommandODC {
         ItemStack held = ctx.getSource().asPlayer().getHeldItem(Hand.MAIN_HAND);
         if (held.getItem() == Items.AIR) throw new SimpleCommandExceptionType(new TranslationTextComponent("autooredictconv.command.odc._must_be_holding")).create();
         for (ResourceLocation tag : ItemTags.getCollection().getOwningTags(held.getItem())) {
+            if (tag.getPath().equals("ores") || tag.getPath().equals("ingots") || tag.getPath().equals("blocks")) continue; //ignore the forge:ores, forge:ingots, and forge:blocks base tags that everything has in addition to their actual entries.
             Conversions.conversionMap.put(tag,held.getItem());
             ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc.add",held.getItem().getRegistryName(),tag),true);
         }
