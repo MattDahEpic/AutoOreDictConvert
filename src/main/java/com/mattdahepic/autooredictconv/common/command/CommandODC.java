@@ -1,5 +1,6 @@
 package com.mattdahepic.autooredictconv.common.command;
 
+import com.mattdahepic.autooredictconv.common.AutoOreDictConv;
 import com.mattdahepic.autooredictconv.common.config.ConversionsConfig;
 import com.mattdahepic.autooredictconv.common.convert.Conversions;
 import com.mattdahepic.mdecore.common.registries.CommandRegistry;
@@ -14,6 +15,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.command.arguments.ResourceLocationArgument;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -50,7 +52,10 @@ public class CommandODC {
                         .executes(CommandODC::removeHand)
                         .then(Commands.argument("tag",ResourceLocationArgument.resourceLocation())
                                 .suggests((ctx,bld) -> ISuggestionProvider.suggest(Conversions.conversionMap.keySet().stream().map(ResourceLocation::toString),bld))
-                                .executes(CommandODC::removeTag)));
+                                .executes(CommandODC::removeTag)))
+                .then(Commands.literal("pause")
+                        .requires(s -> s.hasPermissionLevel(0))
+                        .executes(CommandODC::pause));
         LiteralCommandNode<CommandSource> command = dispatcher.register(builder);
     }
     public static int help(CommandContext<CommandSource> ctx) {
@@ -125,5 +130,20 @@ public class CommandODC {
     private static void remove (ResourceLocation tag, CommandContext<CommandSource> ctx) {
         Conversions.conversionMap.remove(tag);
         ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc.remove",tag),true);
+    }
+    public static int pause(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
+        try {
+            String name = ctx.getSource().asPlayer().getScoreboardName();
+            if (AutoOreDictConv.pausedPlayers.contains(name)) {
+                AutoOreDictConv.pausedPlayers.remove(name);
+                ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc.pause.unpause"),false);
+            } else {
+                AutoOreDictConv.pausedPlayers.add(name);
+                ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc.pause.pause"),false);
+            }
+            return Command.SINGLE_SUCCESS;
+        } catch (Exception ex) {
+            throw new SimpleCommandExceptionType(new TranslationTextComponent("autooredictconv.command.odc.pause.invalid")).create();
+        }
     }
 }

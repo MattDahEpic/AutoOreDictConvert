@@ -23,11 +23,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 @Mod("autooredictconv")
 public class AutoOreDictConv {
     public static final String MODID = "autooredictconv";
     public static final Logger logger = LogManager.getLogger();
+
+    public static ArrayList<String> pausedPlayers = new ArrayList<String>();
 
     public AutoOreDictConv () {
         //config
@@ -70,6 +73,7 @@ public class AutoOreDictConv {
     public void onTick (TickEvent.ServerTickEvent e) {
         if (!OptionsConfig.COMMON.enableKeypress.get()) {
             for (PlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
+                if (pausedPlayers.contains(p.getScoreboardName())) continue;
                 Conversions.convert(p);
             }
         }

@@ -15,6 +15,9 @@
   "autooredictconv.command.odc.add": "Added §6{0}§r as the default conversion for the §6{1}§r tag",
   "autooredictconv.command.odc.reload": "§aConversions reloaded!",
   "autooredictconv.command.odc.remove": "Removed conversion with tag §c{0}§r, if it exists",
+  "autooredictconv.command.odc.pause.invalid": "This command can only be run as a player!",
+  "autooredictconv.command.odc.pause.pause": "Conversions paused.",
+  "autooredictconv.command.odc.pause.unpause": "Conversions unpaused.",
 
   "autooredictconv.converting": "Converting!",
 
