@@ -60,7 +60,7 @@ public class AutoOreDictConv {
         PacketHandler.initPackets();
         CommandRegistry.registerCommand(CommandODC::register);
         ConversionsConfig.load();
-        logger.info("Ready to convert with "+ Conversions.conversionMap.keySet().size()+" entries in the config.");
+        logger.info("Ready to convert with "+ Conversions.tagConversionMap.keySet().size()+" entries in the config.");
     }
 
     /*

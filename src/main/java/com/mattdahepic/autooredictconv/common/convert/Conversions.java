@@ -13,13 +13,15 @@ import javax.annotation.Nonnull;
 import java.util.*;
 
 public class Conversions {
-    public static Map<ResourceLocation, Item> conversionMap = new HashMap<>();
+    public static Map<ResourceLocation, Item> tagConversionMap = new HashMap<>();
+    public static Map<Item,Item> itemConversionMap = new HashMap<>();
     /* HELPERS */
     public static boolean itemHasConversion (ItemStack stack) {
         if (stack.isEmpty()) return false;
         for (ResourceLocation tag : ItemTags.getCollection().getOwningTags(stack.getItem())) {
             //if item has conversion and item isn't already converted
-            if (conversionMap.containsKey(tag) && !ItemHelper.isSameIgnoreStackSize(new ItemStack(conversionMap.get(tag)),stack,false)) return true;
+            if (tagConversionMap.containsKey(tag) && !ItemHelper.isSameIgnoreStackSize(new ItemStack(tagConversionMap.get(tag)),stack,false)) return true;
+            if (itemConversionMap.containsKey(stack.getItem()) && !ItemHelper.isSameIgnoreStackSize(new ItemStack(itemConversionMap.get(stack.getItem())),stack,false)) return true;
         }
         return false;
     }
@@ -45,8 +47,11 @@ public class Conversions {
      */
     public static ItemStack convert (@Nonnull ItemStack item) {
         for (ResourceLocation tag : ItemTags.getCollection().getOwningTags(item.getItem())) { //for each tag this item has
-            if (conversionMap.containsKey(tag)) { //do we have a conversion?
-                return new ItemStack(conversionMap.get(tag),item.getCount());
+            if (tagConversionMap.containsKey(tag)) {
+                return new ItemStack(tagConversionMap.get(tag),item.getCount());
+            }
+            if (itemConversionMap.containsKey(item.getItem())) {
+                return new ItemStack(itemConversionMap.get(item.getItem()),item.getCount());
             }
         }
         return item;

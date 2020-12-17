@@ -30,9 +30,14 @@ public class ConversionsConfig {
 
     public static void save() {
         try (BufferedWriter writer = Files.newBufferedWriter(file.toPath())) {
-            Conversions.conversionMap.forEach((tag, item) -> {
+            Conversions.tagConversionMap.forEach((tag, item) -> {
                 try {
                     writer.write(tag+"="+item.getRegistryName()+"\n");
+                } catch (IOException ignored) {}
+            });
+            Conversions.itemConversionMap.forEach((in,out) -> {
+                try {
+                    writer.write(in.getRegistryName()+">"+out.getRegistryName()+"\n");
                 } catch (IOException ignored) {}
             });
         } catch (IOException ignored) {}
@@ -41,18 +46,29 @@ public class ConversionsConfig {
         try {
             if (line.startsWith("#")) return;
             if (line.equals("")) return;
-            //tag:name=modid:item
-            ResourceLocation tag = ResourceLocation.create(line.substring(0, line.indexOf("=")),':');
-            ResourceLocation itemLoc = ResourceLocation.create(line.substring(line.indexOf("=") + 1),':');
 
-            Item item = ForgeRegistries.ITEMS.getValue(itemLoc);
-            Conversions.conversionMap.put(tag,item);
+            if (line.contains("=")) { //tag conversions
+                //tag:name=modid:item
+                ResourceLocation tag = ResourceLocation.create(line.substring(0, line.indexOf("=")),':');
+                ResourceLocation itemLoc = ResourceLocation.create(line.substring(line.indexOf("=") + 1),':');
+                Item item = ForgeRegistries.ITEMS.getValue(itemLoc);
+                Conversions.tagConversionMap.put(tag,item);
+            } else if (line.contains(">")) {
+                //modid:item>modid:item
+                Item in = ForgeRegistries.ITEMS.getValue(ResourceLocation.create(line.substring(0,line.indexOf('>')),':'));
+                Item out = ForgeRegistries.ITEMS.getValue(ResourceLocation.create(line.substring(line.indexOf('>') + 1),':'));
+                Conversions.itemConversionMap.put(in,out);
+            } else {
+                throw new RuntimeException("Invalid conversion config on line \""+line+"\"");
+            }
+
         } catch (Exception e) {
             throw new RuntimeException("Error processing entry \"" + line + "\"! Does the item exist?", e);
         }
     }
     public static void reload() {
-        Conversions.conversionMap.clear();
+        Conversions.tagConversionMap.clear();
+        Conversions.itemConversionMap.clear();
         load();
     }
 

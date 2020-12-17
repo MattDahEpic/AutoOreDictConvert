@@ -15,7 +15,6 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.command.arguments.ResourceLocationArgument;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -51,7 +50,7 @@ public class CommandODC {
                 .then(Commands.literal("remove")
                         .executes(CommandODC::removeHand)
                         .then(Commands.argument("tag",ResourceLocationArgument.resourceLocation())
-                                .suggests((ctx,bld) -> ISuggestionProvider.suggest(Conversions.conversionMap.keySet().stream().map(ResourceLocation::toString),bld))
+                                .suggests((ctx,bld) -> ISuggestionProvider.suggest(Conversions.tagConversionMap.keySet().stream().map(ResourceLocation::toString),bld))
                                 .executes(CommandODC::removeTag)))
                 .then(Commands.literal("pause")
                         .requires(s -> s.hasPermissionLevel(0))
@@ -91,7 +90,7 @@ public class CommandODC {
     }
     public static int list(CommandContext<CommandSource> ctx) {
         ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc.list"),false);
-        Conversions.conversionMap.forEach((tag,item) -> {
+        Conversions.tagConversionMap.forEach((tag, item) -> {
             ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc._each_pair",tag,item),true);
         });
         return Command.SINGLE_SUCCESS;
@@ -101,7 +100,7 @@ public class CommandODC {
         if (held.getItem() == Items.AIR) throw new SimpleCommandExceptionType(new TranslationTextComponent("autooredictconv.command.odc._must_be_holding")).create();
         for (ResourceLocation tag : ItemTags.getCollection().getOwningTags(held.getItem())) {
             if (tag.getPath().equals("ores") || tag.getPath().equals("ingots") || tag.getPath().equals("blocks")) continue; //ignore the forge:ores, forge:ingots, and forge:blocks base tags that everything has in addition to their actual entries.
-            Conversions.conversionMap.put(tag,held.getItem());
+            Conversions.tagConversionMap.put(tag,held.getItem());
             ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc.add",held.getItem().getRegistryName(),tag),true);
         }
         ConversionsConfig.save();
@@ -128,7 +127,7 @@ public class CommandODC {
         return Command.SINGLE_SUCCESS;
     }
     private static void remove (ResourceLocation tag, CommandContext<CommandSource> ctx) {
-        Conversions.conversionMap.remove(tag);
+        Conversions.tagConversionMap.remove(tag);
         ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc.remove",tag),true);
     }
     public static int pause(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
