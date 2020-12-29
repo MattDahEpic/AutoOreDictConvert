@@ -12,6 +12,8 @@
   "autooredictconv.command.odc.dump": "Listing all item tags...",
   "autooredictconv.command.odc.find": "The tag §b{0}§r contains the items:",
   "autooredictconv.command.odc.list": "The configured conversions are:",
+  "autooredictconv.command.odc.list.tag": "§nTag Conversions§r",
+  "autooredictconv.command.odc.list.item": "§nItem Conversions§r",
   "autooredictconv.command.odc.add": "Added §6{0}§r as the default conversion for the §6{1}§r tag",
   "autooredictconv.command.odc.reload": "§aConversions reloaded!",
   "autooredictconv.command.odc.remove": "Removed conversion with tag §c{0}§r, if it exists",

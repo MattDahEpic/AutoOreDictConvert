@@ -15,6 +15,12 @@ import java.util.*;
 public class Conversions {
     public static Map<ResourceLocation, Item> tagConversionMap = new HashMap<>();
     public static Map<Item,Item> itemConversionMap = new HashMap<>();
+    public static final List<String> tagBlacklist = Arrays.asList(
+            "forge:ores",
+            "forge:ingots",
+            "forge:blocks",
+            "minecraft:beacon_payment_items"
+    );
     /* HELPERS */
     public static boolean itemHasConversion (ItemStack stack) {
         if (stack.isEmpty()) return false;

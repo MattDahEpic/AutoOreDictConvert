@@ -90,16 +90,25 @@ public class CommandODC {
     }
     public static int list(CommandContext<CommandSource> ctx) {
         ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc.list"),false);
-        Conversions.tagConversionMap.forEach((tag, item) -> {
-            ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc._each_pair",tag,item),true);
-        });
+        if (!Conversions.tagConversionMap.isEmpty()) {
+            ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc.list.tag"),true);
+            Conversions.tagConversionMap.forEach((tag, item) -> {
+                ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc._each_pair", tag, item), true);
+            });
+        }
+        if (!Conversions.itemConversionMap.isEmpty()) {
+            ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc.list.item"),true);
+            Conversions.itemConversionMap.forEach((in, out) -> {
+                ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc._each_pair",in,out),true);
+            });
+        }
         return Command.SINGLE_SUCCESS;
     }
     public static int add(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
         ItemStack held = ctx.getSource().asPlayer().getHeldItem(Hand.MAIN_HAND);
         if (held.getItem() == Items.AIR) throw new SimpleCommandExceptionType(new TranslationTextComponent("autooredictconv.command.odc._must_be_holding")).create();
         for (ResourceLocation tag : ItemTags.getCollection().getOwningTags(held.getItem())) {
-            if (tag.getPath().equals("ores") || tag.getPath().equals("ingots") || tag.getPath().equals("blocks")) continue; //ignore the forge:ores, forge:ingots, and forge:blocks base tags that everything has in addition to their actual entries.
+            if (Conversions.tagBlacklist.contains(tag.toString())) continue; //ignore tags that everything has in addition to their actual entries.
             Conversions.tagConversionMap.put(tag,held.getItem());
             ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc.add",held.getItem().getRegistryName(),tag),true);
         }
