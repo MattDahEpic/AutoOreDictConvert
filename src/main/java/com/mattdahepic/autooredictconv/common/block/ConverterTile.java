@@ -9,8 +9,19 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.NonNullSupplier;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
-public class ConverterTile extends TileEntity implements ISidedInventory {
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+public class ConverterTile extends TileEntity implements ICapabilityProvider, IItemHandler {
     public static final TileEntityType<?> TYPE = TileEntityType.Builder.create(ConverterTile::new,new ConverterBlock()).build(null).setRegistryName(AutoOreDictConv.MODID,"converter");
 
     private static final int SIZE = 1;
@@ -20,41 +31,60 @@ public class ConverterTile extends TileEntity implements ISidedInventory {
         super(TYPE);
     }
 
-    @Override public int getSizeInventory() {return SIZE;}
-    @Override public int getInventoryStackLimit() {return 64;}
-    @Override public void openInventory(PlayerEntity player) {}
-    @Override public void closeInventory(PlayerEntity player) {}
-    @Override public int[] getSlotsForFace (Direction side) { return side == Direction.UP || side == Direction.DOWN ? new int[]{0} : new int[]{}; }
-    @Override public boolean isEmpty () {return contents.isEmpty();}
-    @Override public boolean isUsableByPlayer (PlayerEntity player) { return this.world.getTileEntity(this.pos) != this ? false : player.getDistanceSq((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D; }
-
-    @Override public boolean canInsertItem (int slot, ItemStack stack, Direction side) { return side == Direction.UP && contents.get(slot) == ItemStack.EMPTY && isItemValidForSlot(slot,stack); }
-    @Override public boolean canExtractItem (int slot, ItemStack item, Direction dir) { return dir == Direction.DOWN && this.getStackInSlot(slot) != null; }
-    @Override public boolean isItemValidForSlot (int slot, ItemStack stack) { return slot < contents.size() && Conversions.itemHasConversion(stack); }
-    @Override public ItemStack getStackInSlot (int slot) { return slot < contents.size() ? contents.get(slot) : ItemStack.EMPTY; }
-    @Override public void clear() { for (int i = 0; i < this.getSizeInventory(); ++i) this.setInventorySlotContents(i,ItemStack.EMPTY); }
+    @Override public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            if (side == Direction.UP || side == Direction.DOWN) {
+                return LazyOptional.of(new NonNullSupplier<T>() {
+                    @Nonnull
+                    @Override
+                    public T get() {
+                        return (T) ConverterTile.this;
+                    }
+                });
+            }
+        }
+        return super.getCapability(cap, side);
+    }
 
     @Override
-    public ItemStack removeStackFromSlot (int slot) {
-        return contents.set(slot,ItemStack.EMPTY);
+    public int getSlots() {
+        return contents.size();
     }
     @Override
-    public void setInventorySlotContents (int slot, ItemStack stack) {
-        contents.set(slot,Conversions.convert(stack));
-        if (stack != null && stack.getCount() > this.getInventoryStackLimit()) stack.setCount(this.getInventoryStackLimit());
-        this.markDirty();
+    public ItemStack getStackInSlot (int slot) {
+        return slot < contents.size() ? contents.get(slot) : ItemStack.EMPTY;
     }
     @Override
-    public ItemStack decrStackSize (int slot, int amount) {
+    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+        if (slot < contents.size()) {
+            if (contents.get(slot) == ItemStack.EMPTY) {
+                if (Conversions.itemHasConversion(stack)) {
+                    if (!simulate) contents.set(slot,Conversions.convert(stack));
+                    return ItemStack.EMPTY;
+                }
+            }
+        }
+        return stack;
+    }
+    @Override
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
         ItemStack ret;
         if (contents.get(slot).getCount() <= amount) { //not enough items
             ret = contents.get(slot);
-            contents.set(slot,ItemStack.EMPTY);
+            if (!simulate) contents.set(slot,ItemStack.EMPTY);
         } else { //enough items
-            ret = contents.get(slot).split(amount);
+            ret = (simulate ? contents.get(slot).copy() : contents.get(slot)).split(amount);
             if (contents.get(slot).getCount() == 0) contents.set(slot,ItemStack.EMPTY);
         }
-        this.markDirty();
+        if (!simulate) this.markDirty();
         return ret;
+    }
+    @Override
+    public int getSlotLimit(int slot) {
+        return 64;
+    }
+    @Override
+    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+        return slot < contents.size() && Conversions.itemHasConversion(stack);
     }
 }
