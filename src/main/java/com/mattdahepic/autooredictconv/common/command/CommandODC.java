@@ -93,13 +93,13 @@ public class CommandODC {
         if (!Conversions.tagConversionMap.isEmpty()) {
             ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc.list.tag"),true);
             Conversions.tagConversionMap.forEach((tag, item) -> {
-                ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc._each_pair", tag, item), true);
+                ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc._each_pair", tag, item.getRegistryName()), true);
             });
         }
         if (!Conversions.itemConversionMap.isEmpty()) {
             ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc.list.item"),true);
             Conversions.itemConversionMap.forEach((in, out) -> {
-                ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc._each_pair",in,out),true);
+                ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc._each_pair",in.getRegistryName(),out.getRegistryName()),true);
             });
         }
         return Command.SINGLE_SUCCESS;
