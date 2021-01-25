@@ -20,7 +20,9 @@ public class Conversions {
             "forge:ores",
             "forge:ingots",
             "forge:blocks",
-            "minecraft:beacon_payment_items"
+            "minecraft:beacon_payment_items",
+            "minecraft:piglin_loved",
+            "flux:market_accept"
     );
     /* HELPERS */
     public static boolean itemHasConversion (ItemStack stack) {

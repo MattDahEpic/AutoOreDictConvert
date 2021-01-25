@@ -15,6 +15,7 @@
   "autooredictconv.command.odc.list.tag": "§nTag Conversions§r",
   "autooredictconv.command.odc.list.item": "§nItem Conversions§r",
   "autooredictconv.command.odc.add": "Added §6{0}§r as the default conversion for the §6{1}§r tag",
+  "autooredictconv.command.odc.add.none": "§4The item has no tags (or all of its tags are blacklisted to prevent mass conversion). You may consider manually adding a direct conversion to the config file and running §6/odc reload§4.§r",
   "autooredictconv.command.odc.reload": "§aConversions reloaded!",
   "autooredictconv.command.odc.remove": "Removed conversion with tag §c{0}§r, if it exists",
   "autooredictconv.command.odc.pause.invalid": "This command can only be run as a player!",

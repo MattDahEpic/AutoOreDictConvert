@@ -107,11 +107,14 @@ public class CommandODC {
     public static int add(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
         ItemStack held = ctx.getSource().asPlayer().getHeldItem(Hand.MAIN_HAND);
         if (held.getItem() == Items.AIR) throw new SimpleCommandExceptionType(new TranslationTextComponent("autooredictconv.command.odc._must_be_holding")).create();
+        int addedTo = 0;
         for (ResourceLocation tag : ItemTags.getCollection().getOwningTags(held.getItem())) {
             if (Conversions.tagBlacklist.contains(tag.toString())) continue; //ignore tags that everything has in addition to their actual entries.
             Conversions.tagConversionMap.put(tag,held.getItem());
+            addedTo++;
             ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc.add",held.getItem().getRegistryName(),tag),true);
         }
+        if (addedTo == 0) ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc.add.none"),true);
         ConversionsConfig.save();
         return Command.SINGLE_SUCCESS;
     }

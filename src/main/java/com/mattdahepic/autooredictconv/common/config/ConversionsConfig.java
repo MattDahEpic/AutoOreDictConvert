@@ -74,6 +74,11 @@ public class ConversionsConfig {
 
     private static void writeDefaults(File file) {
         try (FileWriter out = new FileWriter(file)) {
+            out.write("# Format for tag conversion (all items in tag `namespace:tag/name` will be converted to destination item `modid:item`):\n");
+            out.write("# namespace:tag/name=modid:item\n");
+            out.write("# Format for direct item conversion (the item `modid:sourceitem` will be converted to `modid:destitem`):\n");
+            out.write("# modid:sourceitem>modid:destitem\n");
+            out.write("\n");
             out.write("# Default conversions config\n");
             out.write("forge:ores/iron=minecraft:iron_ore\n");
             out.write("forge:ores/gold=minecraft:gold_ore\n");
