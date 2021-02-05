@@ -22,7 +22,13 @@ public class Conversions {
             "forge:blocks",
             "minecraft:beacon_payment_items",
             "minecraft:piglin_loved",
-            "flux:market_accept"
+            "flux:market_accept",
+            "minecolonies:sawmill_ingredient_excluded",
+            "minecolonies:blacksmith_product",
+            "minecolonies:blacksmith_ingredient",
+            "minecolonies:reduceable_product_excluded",
+            "minecolonies:reduceable_ingredient",
+            "resourcefulbees:valid_apiary"
     );
     /* HELPERS */
     public static boolean itemHasConversion (ItemStack stack) {
