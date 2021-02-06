@@ -11,8 +11,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 public class ConversionsConfig {
+    private static final String[] comment = new String[]{
+            "# Format for tag conversion (all items in tag `namespace:tag/name` will be converted to destination item `modid:item`):\n",
+            "# namespace:tag/name=modid:item\n",
+            "# Format for direct item conversion (the item `modid:sourceitem` will be converted to `modid:destitem`):\n",
+            "# modid:sourceitem>modid:destitem\n",
+            "\n"
+    };
     public static File file;
     public static void load() {
         try {
@@ -30,12 +38,14 @@ public class ConversionsConfig {
 
     public static void save() {
         try (BufferedWriter writer = Files.newBufferedWriter(file.toPath())) {
-            Conversions.tagConversionMap.forEach((tag, item) -> {
+            for (String c : comment) writer.write(c);
+            new TreeMap<>(Conversions.tagConversionMap).forEach((tag, item) -> {
                 try {
                     writer.write(tag+"="+item.getRegistryName()+"\n");
                 } catch (IOException ignored) {}
             });
-            Conversions.itemConversionMap.forEach((in,out) -> {
+            writer.write("\n");
+            new TreeMap<>(Conversions.itemConversionMap).forEach((in,out) -> {
                 try {
                     writer.write(in.getRegistryName()+">"+out.getRegistryName()+"\n");
                 } catch (IOException ignored) {}
@@ -74,11 +84,7 @@ public class ConversionsConfig {
 
     private static void writeDefaults(File file) {
         try (FileWriter out = new FileWriter(file)) {
-            out.write("# Format for tag conversion (all items in tag `namespace:tag/name` will be converted to destination item `modid:item`):\n");
-            out.write("# namespace:tag/name=modid:item\n");
-            out.write("# Format for direct item conversion (the item `modid:sourceitem` will be converted to `modid:destitem`):\n");
-            out.write("# modid:sourceitem>modid:destitem\n");
-            out.write("\n");
+            for (String c : comment) out.write(c);
             out.write("# Default conversions config\n");
             out.write("forge:ores/iron=minecraft:iron_ore\n");
             out.write("forge:ores/gold=minecraft:gold_ore\n");
