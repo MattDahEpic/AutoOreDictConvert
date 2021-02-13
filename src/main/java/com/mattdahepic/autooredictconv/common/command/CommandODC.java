@@ -45,6 +45,11 @@ public class CommandODC {
                         .executes(CommandODC::list))
                 .then(Commands.literal("add")
                         .executes(CommandODC::add))
+                .then(Commands.literal("set")
+                        .executes(CommandRegistry::missingArgument)
+                        .then(Commands.argument("tag", ResourceLocationArgument.resourceLocation())
+                                .suggests((ctx, bld) -> ISuggestionProvider.suggest(ItemTags.getCollection().getRegisteredTags().stream().map(ResourceLocation::toString),bld))
+                                .executes(CommandODC::set)))
                 .then(Commands.literal("reload")
                         .executes(CommandODC::reload))
                 .then(Commands.literal("remove")
@@ -116,6 +121,16 @@ public class CommandODC {
         }
         if (addedTo == 0) ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc.add.none"),true);
         ConversionsConfig.save();
+        return Command.SINGLE_SUCCESS;
+    }
+    public static int set(CommandContext<CommandSource> ctx) throws CommandSyntaxException {
+        ResourceLocation loc = ResourceLocationArgument.getResourceLocation(ctx,"tag");
+        ITag<Item> tag = ItemTags.getCollection().get(loc);
+        if (tag == null) throw new SimpleCommandExceptionType(new TranslationTextComponent("autooredictconv.command.odc._no_tag",loc)).create();
+        ItemStack held = ctx.getSource().asPlayer().getHeldItem(Hand.MAIN_HAND);
+        if (held.getItem() == Items.AIR) throw new SimpleCommandExceptionType(new TranslationTextComponent("autooredictconv.command.odc._must_be_holding")).create();
+        Conversions.tagConversionMap.put(loc,held.getItem());
+        ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc.add",held.getItem().getRegistryName(),loc),true);
         return Command.SINGLE_SUCCESS;
     }
     public static int reload(CommandContext<CommandSource> ctx) {
