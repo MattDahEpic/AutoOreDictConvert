@@ -63,7 +63,7 @@ public class CommandODC {
         LiteralCommandNode<CommandSource> command = dispatcher.register(builder);
     }
     public static int help(CommandContext<CommandSource> ctx) {
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 9; i++) {
             ctx.getSource().sendFeedback(new TranslationTextComponent("autooredictconv.command.odc.help."+i),false);
         }
         return Command.SINGLE_SUCCESS;
