@@ -1,8 +1,10 @@
 package com.mattdahepic.autooredictconv.common.block;
 
 import com.mattdahepic.autooredictconv.common.AutoOreDictConv;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
@@ -15,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -22,7 +25,10 @@ import javax.annotation.Nullable;
 public class ConverterBlock extends Block {
     public static final String NAME = "converter";
     public ConverterBlock() {
-        super(Properties.create(Material.WOOD));
+        super(Properties.create(Material.WOOD)
+                .harvestTool(ToolType.AXE)
+                .sound(SoundType.WOOD)
+                .hardnessAndResistance(2.5f));
     }
 
     @Override
