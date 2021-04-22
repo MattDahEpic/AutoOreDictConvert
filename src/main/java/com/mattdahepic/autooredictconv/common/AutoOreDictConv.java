@@ -14,6 +14,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -53,7 +55,6 @@ public class AutoOreDictConv {
         //forge bus events
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
         forgeBus.addListener(this::onTick);
-        forgeBus.addListener(this::onTooltip);
     }
 
     public void clientSetup (final FMLClientSetupEvent event) {
@@ -61,6 +62,7 @@ public class AutoOreDictConv {
             KeyHandler.register();
             MinecraftForge.EVENT_BUS.addListener(KeyHandler::onKeyInput);
         }
+        MinecraftForge.EVENT_BUS.addListener(this::onTooltip);
     }
 
     public void commonSetup (final FMLCommonSetupEvent event) {
@@ -79,6 +81,7 @@ public class AutoOreDictConv {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     public void onTooltip(ItemTooltipEvent e) {
         if (e.getItemStack().getItem() == ForgeRegistries.ITEMS.getValue(new ResourceLocation(MODID,ConverterBlock.NAME))) {
             for (int i = 0; i < 3; i++) {
