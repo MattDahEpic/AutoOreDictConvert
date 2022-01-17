@@ -1,15 +1,15 @@
 package com.mattdahepic.autooredictconv.common.block;
 
 import com.mattdahepic.mdecore.common.registries.BlockRegistry;
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemGroup;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class AutoOreDictConvBlocks extends BlockRegistry {
     public static Block converter;
 
-    protected ItemGroup getGroup() { return ItemGroup.MISC; }
+    protected CreativeModeTab getGroup() { return CreativeModeTab.TAB_MISC; }
 
     @SubscribeEvent
     public void register(RegistryEvent.Register<Block> event) {

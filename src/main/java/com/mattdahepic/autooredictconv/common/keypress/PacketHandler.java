@@ -1,10 +1,10 @@
 package com.mattdahepic.autooredictconv.common.keypress;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -20,7 +20,7 @@ public class PacketHandler {
         registerMessage(ConvertPacket.class, ConvertPacket::encode, ConvertPacket::decode, ConvertPacket::handle);
     }
 
-    private static <MSG> void registerMessage(Class<MSG> messageType, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer,MSG> decoder, BiConsumer<MSG, Supplier<NetworkEvent.Context>> handler) {
+    private static <MSG> void registerMessage(Class<MSG> messageType, BiConsumer<MSG, FriendlyByteBuf> encoder, Function<FriendlyByteBuf,MSG> decoder, BiConsumer<MSG, Supplier<NetworkEvent.Context>> handler) {
         INSTANCE.registerMessage(nextPacketId,messageType,encoder,decoder,handler);
         ++nextPacketId;
     }

@@ -1,8 +1,8 @@
 package com.mattdahepic.autooredictconv.common.config;
 
 import com.mattdahepic.autooredictconv.common.convert.Conversions;
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.io.BufferedWriter;
@@ -59,14 +59,14 @@ public class ConversionsConfig {
 
             if (line.contains("=")) { //tag conversions
                 //tag:name=modid:item
-                ResourceLocation tag = ResourceLocation.create(line.substring(0, line.indexOf("=")),':');
-                ResourceLocation itemLoc = ResourceLocation.create(line.substring(line.indexOf("=") + 1),':');
+                ResourceLocation tag = ResourceLocation.of(line.substring(0, line.indexOf("=")),':');
+                ResourceLocation itemLoc = ResourceLocation.of(line.substring(line.indexOf("=") + 1),':');
                 Item item = ForgeRegistries.ITEMS.getValue(itemLoc);
                 Conversions.tagConversionMap.put(tag,item);
             } else if (line.contains(">")) {
                 //modid:item>modid:item
-                Item in = ForgeRegistries.ITEMS.getValue(ResourceLocation.create(line.substring(0,line.indexOf('>')),':'));
-                Item out = ForgeRegistries.ITEMS.getValue(ResourceLocation.create(line.substring(line.indexOf('>') + 1),':'));
+                Item in = ForgeRegistries.ITEMS.getValue(ResourceLocation.of(line.substring(0,line.indexOf('>')),':'));
+                Item out = ForgeRegistries.ITEMS.getValue(ResourceLocation.of(line.substring(line.indexOf('>') + 1),':'));
                 Conversions.itemConversionMap.put(in,out);
             } else {
                 throw new RuntimeException("Invalid conversion config on line \""+line+"\"");

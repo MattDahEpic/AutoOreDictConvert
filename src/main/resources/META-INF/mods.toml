@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[35,)"
+loaderVersion="[38,)"
 license="All rights reserved"
 issueTrackerURL="https://github.com/MattDahEpic/AutoOreDictConvert/issues"
 
@@ -18,18 +18,18 @@ issueTrackerURL="https://github.com/MattDahEpic/AutoOreDictConvert/issues"
     [[dependencies.autooredictconv]]
         modId="forge"
         mandatory=true
-        versionRange="[34,)"
+        versionRange="[38,)"
         ordering="NONE"
         side="BOTH"
     [[dependencies.autooredictconv]]
         modId="minecraft"
         mandatory=true
-        versionRange="[1.16.3]"
+        versionRange="[1.18,)"
         ordering="NONE"
         side="BOTH"
     [[dependencies.autooredictconv]]
         modId="mdecore"
         mandatory=true
-        versionRange="[16.0.1,)"
+        versionRange="[18.0.0,)"
         ordering="NONE"
         side="BOTH"

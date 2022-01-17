@@ -10,10 +10,9 @@ import com.mattdahepic.autooredictconv.common.convert.Conversions;
 import com.mattdahepic.autooredictconv.common.keypress.KeyHandler;
 import com.mattdahepic.autooredictconv.common.keypress.PacketHandler;
 import com.mattdahepic.mdecore.common.registries.*;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -25,7 +24,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -74,7 +73,7 @@ public class AutoOreDictConv {
 
     public void onTick (TickEvent.ServerTickEvent e) {
         if (!OptionsConfig.COMMON.enableKeypress.get()) {
-            for (PlayerEntity p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
+            for (Player p : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
                 if (pausedPlayers.contains(p.getScoreboardName())) continue;
                 Conversions.convert(p);
             }
@@ -85,7 +84,7 @@ public class AutoOreDictConv {
     public void onTooltip(ItemTooltipEvent e) {
         if (e.getItemStack().getItem() == ForgeRegistries.ITEMS.getValue(new ResourceLocation(MODID,ConverterBlock.NAME))) {
             for (int i = 0; i < 3; i++) {
-                e.getToolTip().add(new TranslationTextComponent("tooltip.autooredictconv.converter."+i));
+                e.getToolTip().add(new TranslatableComponent("tooltip.autooredictconv.converter."+i));
             }
         }
     }

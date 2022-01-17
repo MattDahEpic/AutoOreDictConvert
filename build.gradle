@@ -1,28 +1,27 @@
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
-        jcenter()
+        // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
+        maven { url = 'https://maven.minecraftforge.net' }
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
+apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
 version = "${version_major}.${version_minor}.${version_patch}"
 group = "com.mattdahepic.${modid}" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "${modid}-${mc_version}"
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
-    mappings channel: 'snapshot', version: project.mcp_mappings
-
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    mappings channel: 'official', version: project.mc_version
 
     runs {
         client {
@@ -83,7 +82,7 @@ dependencies {
             name: "forge",
             version: "${project.mc_version}-${project.forge_version}"
     ])
-    compile fg.deobf("com.mattdahepic:mdecore:${mc_version}-${mdecore_version}")
+    implementation fg.deobf("com.mattdahepic:mdecore:${mc_version}-${mdecore_version}")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

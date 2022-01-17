@@ -2,33 +2,31 @@ package com.mattdahepic.autooredictconv.common.block;
 
 import com.mattdahepic.autooredictconv.common.AutoOreDictConv;
 import com.mattdahepic.autooredictconv.common.convert.Conversions;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ConverterTile extends TileEntity implements ICapabilityProvider, IItemHandler {
-    public static final TileEntityType<?> TYPE = TileEntityType.Builder.create(ConverterTile::new,new ConverterBlock()).build(null).setRegistryName(AutoOreDictConv.MODID,"converter");
+public class ConverterTile extends BlockEntity implements ICapabilityProvider, IItemHandler {
+    public static final BlockEntityType<?> TYPE = BlockEntityType.Builder.of(ConverterTile::new,new ConverterBlock()).build(null).setRegistryName(AutoOreDictConv.MODID,"converter");
 
     private static final int SIZE = 1;
     private NonNullList<ItemStack> contents = NonNullList.withSize(SIZE,ItemStack.EMPTY);
 
-    public ConverterTile() {
-        super(TYPE);
+    public ConverterTile(BlockPos pos, BlockState state) {
+        super(TYPE, pos, state);
     }
 
     @Override public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
@@ -76,7 +74,7 @@ public class ConverterTile extends TileEntity implements ICapabilityProvider, II
             ret = (simulate ? contents.get(slot).copy() : contents.get(slot)).split(amount);
             if (contents.get(slot).getCount() == 0) contents.set(slot,ItemStack.EMPTY);
         }
-        if (!simulate) this.markDirty();
+        if (!simulate) this.setChanged();
         return ret;
     }
     @Override
