@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class ConverterTile extends BlockEntity implements ICapabilityProvider, IItemHandler {
-    public static final BlockEntityType<?> TYPE = BlockEntityType.Builder.of(ConverterTile::new,new ConverterBlock()).build(null).setRegistryName(AutoOreDictConv.MODID,"converter");
+    public static final BlockEntityType<?> TYPE = BlockEntityType.Builder.of(ConverterTile::new, AutoOreDictConvBlocks.converter).build(null).setRegistryName(AutoOreDictConv.MODID,"converter");
 
     private static final int SIZE = 1;
     private NonNullList<ItemStack> contents = NonNullList.withSize(SIZE,ItemStack.EMPTY);

@@ -1,6 +1,8 @@
 package com.mattdahepic.autooredictconv.common.convert;
 
 import com.mattdahepic.mdecore.common.helpers.ItemHelper;
+import net.minecraft.core.Registry;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -8,6 +10,8 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.tags.IReverseTag;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -37,9 +41,12 @@ public class Conversions {
     public static boolean itemHasConversion (ItemStack stack) {
         if (stack.isEmpty()) return false;
         if (itemConversionMap.containsKey(stack.getItem()) && !ItemHelper.isSameIgnoreStackSize(new ItemStack(itemConversionMap.get(stack.getItem())),stack,false)) return true;
-        for (ResourceLocation tag : ItemTags.getAllTags().getMatchingTags(stack.getItem())) {
-            //if item has conversion and item isn't already converted
-            if (tagConversionMap.containsKey(tag) && !ItemHelper.isSameIgnoreStackSize(new ItemStack(tagConversionMap.get(tag)),stack,false)) return true;
+        for (IReverseTag<Item> reverseTag : ForgeRegistries.ITEMS.tags().getReverseTag(stack.getItem()).stream().toList()) {
+            for (TagKey<Item> key : reverseTag.getTagKeys().toList()) {
+                ResourceLocation tag = key.location();
+                if (tagConversionMap.containsKey(tag) && !ItemHelper.isSameIgnoreStackSize(new ItemStack(tagConversionMap.get(tag)),stack,false))
+                    return true;
+            }
         }
         return false;
     }
@@ -67,9 +74,12 @@ public class Conversions {
         if (itemConversionMap.containsKey(item.getItem())) {
             return new ItemStack(itemConversionMap.get(item.getItem()),item.getCount());
         }
-        for (ResourceLocation tag : ItemTags.getAllTags().getMatchingTags(item.getItem())) { //for each tag this item has
-            if (tagConversionMap.containsKey(tag)) {
-                return new ItemStack(tagConversionMap.get(tag),item.getCount());
+        for (IReverseTag<Item> reverseTag : ForgeRegistries.ITEMS.tags().getReverseTag(item.getItem()).stream().toList()) {
+            for (TagKey<Item> key : reverseTag.getTagKeys().toList()) {
+                ResourceLocation tag = key.location();
+                if (tagConversionMap.containsKey(tag)) {
+                    return new ItemStack(tagConversionMap.get(tag),item.getCount());
+                }
             }
         }
         return item;

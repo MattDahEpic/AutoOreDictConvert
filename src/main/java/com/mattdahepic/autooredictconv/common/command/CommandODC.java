@@ -15,6 +15,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -24,6 +25,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.tags.IReverseTag;
+import net.minecraftforge.registries.tags.ITag;
 
 public class CommandODC {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -39,7 +43,7 @@ public class CommandODC {
                 .then(Commands.literal("find")
                         .executes(CommandRegistry::missingArgument)
                         .then(Commands.argument("tag", ResourceLocationArgument.id())
-                                .suggests((ctx, bld) -> SharedSuggestionProvider.suggest(ItemTags.getAllTags().getAvailableTags().stream().map(ResourceLocation::toString),bld))
+                                .suggests((ctx, bld) -> SharedSuggestionProvider.suggest(ForgeRegistries.ITEMS.tags().getTagNames().map(TagKey::location).map(ResourceLocation::toString),bld))
                                 .executes(CommandODC::find)))
                 .then(Commands.literal("list")
                         .executes(CommandODC::list))
@@ -48,7 +52,7 @@ public class CommandODC {
                 .then(Commands.literal("set")
                         .executes(CommandRegistry::missingArgument)
                         .then(Commands.argument("tag", ResourceLocationArgument.id())
-                                .suggests((ctx, bld) -> SharedSuggestionProvider.suggest(ItemTags.getAllTags().getAvailableTags().stream().map(ResourceLocation::toString),bld))
+                                .suggests((ctx, bld) -> SharedSuggestionProvider.suggest(ForgeRegistries.ITEMS.tags().getTagNames().map(TagKey::location).map(ResourceLocation::toString),bld))
                                 .executes(CommandODC::set)))
                 .then(Commands.literal("reload")
                         .executes(CommandODC::reload))
@@ -71,24 +75,26 @@ public class CommandODC {
     public static int detect(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ItemStack item = ctx.getSource().getPlayerOrException().getItemInHand(InteractionHand.MAIN_HAND);
         ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc.detect",item.getItem().getRegistryName()),true);
-        ItemTags.getAllTags().getMatchingTags(item.getItem()).forEach(r -> {
-            ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc._each",r),true);
-        });
+        ForgeRegistries.ITEMS.tags().getReverseTag(item.getItem()).stream().forEach(rt ->
+                rt.getTagKeys().forEach(tk ->
+                        ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc._each",tk.location()),true)
+                )
+        );
         return Command.SINGLE_SUCCESS;
     }
     public static int dump(CommandContext<CommandSourceStack> ctx) {
         ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc.dump"),true);
-        ItemTags.getAllTags().getAvailableTags().forEach(r -> {
-            ctx.getSource().sendSuccess(new TextComponent(r.toString()),true);
-        });
+        ForgeRegistries.ITEMS.tags().getTagNames().forEach(r ->
+                ctx.getSource().sendSuccess(new TextComponent(r.location().toString()),true)
+        );
         return Command.SINGLE_SUCCESS;
     }
     public static int find(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ResourceLocation loc = ResourceLocationArgument.getId(ctx,"tag");
-        Tag<Item> tag = ItemTags.getAllTags().getTag(loc);
-        if (tag == null) throw new SimpleCommandExceptionType(new TranslatableComponent("autooredictconv.command.odc._no_tag",loc)).create();
+        ITag<Item> tag = ForgeRegistries.ITEMS.tags().getTag(ItemTags.create(loc));
+        if (tag.isEmpty()) throw new SimpleCommandExceptionType(new TranslatableComponent("autooredictconv.command.odc._no_tag",loc)).create();
         ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc.find",loc),true);
-        tag.getValues().forEach(i -> {
+        tag.stream().forEach(i -> {
             ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc._each",i.getRegistryName()),true);
         });
         return Command.SINGLE_SUCCESS;
@@ -113,11 +119,14 @@ public class CommandODC {
         ItemStack held = ctx.getSource().getPlayerOrException().getItemInHand(InteractionHand.MAIN_HAND);
         if (held.getItem() == Items.AIR) throw new SimpleCommandExceptionType(new TranslatableComponent("autooredictconv.command.odc._must_be_holding")).create();
         int addedTo = 0;
-        for (ResourceLocation tag : ItemTags.getAllTags().getMatchingTags(held.getItem())) {
-            if (Conversions.tagBlacklist.contains(tag.toString())) continue; //ignore tags that everything has in addition to their actual entries.
-            Conversions.tagConversionMap.put(tag,held.getItem());
-            addedTo++;
-            ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc.add",held.getItem().getRegistryName(),tag),true);
+        for (IReverseTag<Item> reverseTag : ForgeRegistries.ITEMS.tags().getReverseTag(held.getItem()).stream().toList()) {
+            for (TagKey<Item> key : reverseTag.getTagKeys().toList()) {
+                ResourceLocation tag = key.location();
+                if (Conversions.tagBlacklist.contains(tag.toString())) continue; //ignore tags that everything has in addition to their actual entries.
+                Conversions.tagConversionMap.put(tag,held.getItem());
+                addedTo++;
+                ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc.add",held.getItem().getRegistryName(),tag),true);
+            }
         }
         if (addedTo == 0) ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc.add.none"),true);
         ConversionsConfig.save();
@@ -125,8 +134,8 @@ public class CommandODC {
     }
     public static int set(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ResourceLocation loc = ResourceLocationArgument.getId(ctx,"tag");
-        Tag<Item> tag = ItemTags.getAllTags().getTag(loc);
-        if (tag == null) throw new SimpleCommandExceptionType(new TranslatableComponent("autooredictconv.command.odc._no_tag",loc)).create();
+        ITag<Item> tag = ForgeRegistries.ITEMS.tags().getTag(ItemTags.create(loc));
+        if (tag.isEmpty()) throw new SimpleCommandExceptionType(new TranslatableComponent("autooredictconv.command.odc._no_tag",loc)).create();
         ItemStack held = ctx.getSource().getPlayerOrException().getItemInHand(InteractionHand.MAIN_HAND);
         if (held.getItem() == Items.AIR) throw new SimpleCommandExceptionType(new TranslatableComponent("autooredictconv.command.odc._must_be_holding")).create();
         Conversions.tagConversionMap.put(loc,held.getItem());
@@ -141,9 +150,12 @@ public class CommandODC {
     public static int removeHand(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ItemStack held = ctx.getSource().getPlayerOrException().getItemInHand(InteractionHand.MAIN_HAND);
         if (held.getItem() == Items.AIR) throw new SimpleCommandExceptionType(new TranslatableComponent("autooredictconv.command.odc._must_be_holding")).create();
-        ItemTags.getAllTags().getMatchingTags(held.getItem()).forEach(tag -> {
-            remove(tag,ctx);
-        });
+        for (IReverseTag<Item> reverseTag : ForgeRegistries.ITEMS.tags().getReverseTag(held.getItem()).stream().toList()) {
+            for (TagKey<Item> key : reverseTag.getTagKeys().toList()) {
+                ResourceLocation tag = key.location();
+                remove(tag,ctx);
+            }
+        }
         ConversionsConfig.save();
         return Command.SINGLE_SUCCESS;
     }
