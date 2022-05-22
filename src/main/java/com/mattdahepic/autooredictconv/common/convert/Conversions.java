@@ -21,6 +21,7 @@ public class Conversions {
     public static Map<Item,Item> itemConversionMap = new HashMap<>();
     public static final List<String> tagBlacklist = Arrays.asList(
             "forge:ores",
+            "forge:nuggets",
             "forge:ingots",
             "forge:blocks",
             "forge:dusts",
@@ -35,7 +36,8 @@ public class Conversions {
             "minecolonies:blacksmith_ingredient",
             "minecolonies:reduceable_product_excluded",
             "minecolonies:reduceable_ingredient",
-            "resourcefulbees:valid_apiary"
+            "resourcefulbees:valid_apiary",
+            "ae2:metal_ingots"
     );
     /* HELPERS */
     public static boolean itemHasConversion (ItemStack stack) {
