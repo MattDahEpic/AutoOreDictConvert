@@ -10,17 +10,17 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullSupplier;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class ConverterTile extends BlockEntity implements ICapabilityProvider, IItemHandler {
-    public static final BlockEntityType<?> TYPE = BlockEntityType.Builder.of(ConverterTile::new, AutoOreDictConvBlocks.converter).build(null).setRegistryName(AutoOreDictConv.MODID,"converter");
+    public static final BlockEntityType<?> TYPE = BlockEntityType.Builder.of(ConverterTile::new, AutoOreDictConv.CONVERTER_BLOCK.get()).build(null);
 
     private static final int SIZE = 1;
     private NonNullList<ItemStack> contents = NonNullList.withSize(SIZE,ItemStack.EMPTY);
@@ -30,7 +30,7 @@ public class ConverterTile extends BlockEntity implements ICapabilityProvider, I
     }
 
     @Override public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
             if (side == Direction.UP || side == Direction.DOWN) {
                 return LazyOptional.of(new NonNullSupplier<T>() {
                     @Nonnull

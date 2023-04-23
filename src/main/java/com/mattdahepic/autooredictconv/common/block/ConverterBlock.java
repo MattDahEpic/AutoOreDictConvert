@@ -10,6 +10,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 public class ConverterBlock extends Block implements EntityBlock {
     public static final String NAME = "converter";
     public ConverterBlock() {

@@ -19,12 +19,10 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.tags.IReverseTag;
 import net.minecraftforge.registries.tags.ITag;
@@ -68,56 +66,56 @@ public class CommandODC {
     }
     public static int help(CommandContext<CommandSourceStack> ctx) {
         for (int i = 0; i < 9; i++) {
-            ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc.help."+i),false);
+            ctx.getSource().sendSuccess(Component.translatable("autooredictconv.command.odc.help."+i),false);
         }
         return Command.SINGLE_SUCCESS;
     }
     public static int detect(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ItemStack item = ctx.getSource().getPlayerOrException().getItemInHand(InteractionHand.MAIN_HAND);
-        ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc.detect",item.getItem().getRegistryName()),true);
+        ctx.getSource().sendSuccess(Component.translatable("autooredictconv.command.odc.detect",ForgeRegistries.ITEMS.getKey(item.getItem())),true);
         ForgeRegistries.ITEMS.tags().getReverseTag(item.getItem()).stream().forEach(rt ->
                 rt.getTagKeys().forEach(tk ->
-                        ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc._each",tk.location()),true)
+                        ctx.getSource().sendSuccess(Component.translatable("autooredictconv.command.odc._each",tk.location()),true)
                 )
         );
         return Command.SINGLE_SUCCESS;
     }
     public static int dump(CommandContext<CommandSourceStack> ctx) {
-        ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc.dump"),true);
+        ctx.getSource().sendSuccess(Component.translatable("autooredictconv.command.odc.dump"),true);
         ForgeRegistries.ITEMS.tags().getTagNames().forEach(r ->
-                ctx.getSource().sendSuccess(new TextComponent(r.location().toString()),true)
+                ctx.getSource().sendSuccess(Component.literal(r.location().toString()),true)
         );
         return Command.SINGLE_SUCCESS;
     }
     public static int find(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ResourceLocation loc = ResourceLocationArgument.getId(ctx,"tag");
         ITag<Item> tag = ForgeRegistries.ITEMS.tags().getTag(ItemTags.create(loc));
-        if (tag.isEmpty()) throw new SimpleCommandExceptionType(new TranslatableComponent("autooredictconv.command.odc._no_tag",loc)).create();
-        ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc.find",loc),true);
+        if (tag.isEmpty()) throw new SimpleCommandExceptionType(Component.translatable("autooredictconv.command.odc._no_tag",loc)).create();
+        ctx.getSource().sendSuccess(Component.translatable("autooredictconv.command.odc.find",loc),true);
         tag.stream().forEach(i -> {
-            ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc._each",i.getRegistryName()),true);
+            ctx.getSource().sendSuccess(Component.translatable("autooredictconv.command.odc._each",ForgeRegistries.ITEMS.getKey(i)),true);
         });
         return Command.SINGLE_SUCCESS;
     }
     public static int list(CommandContext<CommandSourceStack> ctx) {
-        ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc.list"),false);
+        ctx.getSource().sendSuccess(Component.translatable("autooredictconv.command.odc.list"),false);
         if (!Conversions.tagConversionMap.isEmpty()) {
-            ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc.list.tag"),true);
+            ctx.getSource().sendSuccess(Component.translatable("autooredictconv.command.odc.list.tag"),true);
             Conversions.tagConversionMap.forEach((tag, item) -> {
-                ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc._each_pair", tag, item.getRegistryName()), true);
+                ctx.getSource().sendSuccess(Component.translatable("autooredictconv.command.odc._each_pair", tag, ForgeRegistries.ITEMS.getKey(item)), true);
             });
         }
         if (!Conversions.itemConversionMap.isEmpty()) {
-            ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc.list.item"),true);
+            ctx.getSource().sendSuccess(Component.translatable("autooredictconv.command.odc.list.item"),true);
             Conversions.itemConversionMap.forEach((in, out) -> {
-                ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc._each_pair",in.getRegistryName(),out.getRegistryName()),true);
+                ctx.getSource().sendSuccess(Component.translatable("autooredictconv.command.odc._each_pair",ForgeRegistries.ITEMS.getKey(in),ForgeRegistries.ITEMS.getKey(out)),true);
             });
         }
         return Command.SINGLE_SUCCESS;
     }
     public static int add(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ItemStack held = ctx.getSource().getPlayerOrException().getItemInHand(InteractionHand.MAIN_HAND);
-        if (held.getItem() == Items.AIR) throw new SimpleCommandExceptionType(new TranslatableComponent("autooredictconv.command.odc._must_be_holding")).create();
+        if (held.getItem() == Items.AIR) throw new SimpleCommandExceptionType(Component.translatable("autooredictconv.command.odc._must_be_holding")).create();
         int addedTo = 0;
         for (IReverseTag<Item> reverseTag : ForgeRegistries.ITEMS.tags().getReverseTag(held.getItem()).stream().toList()) {
             for (TagKey<Item> key : reverseTag.getTagKeys().toList()) {
@@ -125,31 +123,31 @@ public class CommandODC {
                 if (Conversions.tagBlacklist.contains(tag.toString())) continue; //ignore tags that everything has in addition to their actual entries.
                 Conversions.tagConversionMap.put(tag,held.getItem());
                 addedTo++;
-                ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc.add",held.getItem().getRegistryName(),tag),true);
+                ctx.getSource().sendSuccess(Component.translatable("autooredictconv.command.odc.add",ForgeRegistries.ITEMS.getKey(held.getItem()),tag),true);
             }
         }
-        if (addedTo == 0) ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc.add.none"),true);
+        if (addedTo == 0) ctx.getSource().sendSuccess(Component.translatable("autooredictconv.command.odc.add.none"),true);
         ConversionsConfig.save();
         return Command.SINGLE_SUCCESS;
     }
     public static int set(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ResourceLocation loc = ResourceLocationArgument.getId(ctx,"tag");
         ITag<Item> tag = ForgeRegistries.ITEMS.tags().getTag(ItemTags.create(loc));
-        if (tag.isEmpty()) throw new SimpleCommandExceptionType(new TranslatableComponent("autooredictconv.command.odc._no_tag",loc)).create();
+        if (tag.isEmpty()) throw new SimpleCommandExceptionType(Component.translatable("autooredictconv.command.odc._no_tag",loc)).create();
         ItemStack held = ctx.getSource().getPlayerOrException().getItemInHand(InteractionHand.MAIN_HAND);
-        if (held.getItem() == Items.AIR) throw new SimpleCommandExceptionType(new TranslatableComponent("autooredictconv.command.odc._must_be_holding")).create();
+        if (held.getItem() == Items.AIR) throw new SimpleCommandExceptionType(Component.translatable("autooredictconv.command.odc._must_be_holding")).create();
         Conversions.tagConversionMap.put(loc,held.getItem());
-        ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc.add",held.getItem().getRegistryName(),loc),true);
+        ctx.getSource().sendSuccess(Component.translatable("autooredictconv.command.odc.add",ForgeRegistries.ITEMS.getKey(held.getItem()),loc),true);
         return Command.SINGLE_SUCCESS;
     }
     public static int reload(CommandContext<CommandSourceStack> ctx) {
         ConversionsConfig.reload();
-        ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc.reload"),false);
+        ctx.getSource().sendSuccess(Component.translatable("autooredictconv.command.odc.reload"),false);
         return Command.SINGLE_SUCCESS;
     }
     public static int removeHand(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ItemStack held = ctx.getSource().getPlayerOrException().getItemInHand(InteractionHand.MAIN_HAND);
-        if (held.getItem() == Items.AIR) throw new SimpleCommandExceptionType(new TranslatableComponent("autooredictconv.command.odc._must_be_holding")).create();
+        if (held.getItem() == Items.AIR) throw new SimpleCommandExceptionType(Component.translatable("autooredictconv.command.odc._must_be_holding")).create();
         for (IReverseTag<Item> reverseTag : ForgeRegistries.ITEMS.tags().getReverseTag(held.getItem()).stream().toList()) {
             for (TagKey<Item> key : reverseTag.getTagKeys().toList()) {
                 ResourceLocation tag = key.location();
@@ -167,21 +165,21 @@ public class CommandODC {
     }
     private static void remove (ResourceLocation tag, CommandContext<CommandSourceStack> ctx) {
         Conversions.tagConversionMap.remove(tag);
-        ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc.remove",tag),true);
+        ctx.getSource().sendSuccess(Component.translatable("autooredictconv.command.odc.remove",tag),true);
     }
     public static int pause(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         try {
             String name = ctx.getSource().getPlayerOrException().getScoreboardName();
             if (AutoOreDictConv.pausedPlayers.contains(name)) {
                 AutoOreDictConv.pausedPlayers.remove(name);
-                ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc.pause.unpause"),false);
+                ctx.getSource().sendSuccess(Component.translatable("autooredictconv.command.odc.pause.unpause"),false);
             } else {
                 AutoOreDictConv.pausedPlayers.add(name);
-                ctx.getSource().sendSuccess(new TranslatableComponent("autooredictconv.command.odc.pause.pause"),false);
+                ctx.getSource().sendSuccess(Component.translatable("autooredictconv.command.odc.pause.pause"),false);
             }
             return Command.SINGLE_SUCCESS;
         } catch (Exception ex) {
-            throw new SimpleCommandExceptionType(new TranslatableComponent("autooredictconv.command.odc.pause.invalid")).create();
+            throw new SimpleCommandExceptionType(Component.translatable("autooredictconv.command.odc.pause.invalid")).create();
         }
     }
 }

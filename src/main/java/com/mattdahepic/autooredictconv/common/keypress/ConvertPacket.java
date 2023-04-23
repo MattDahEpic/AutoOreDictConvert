@@ -2,7 +2,7 @@ package com.mattdahepic.autooredictconv.common.keypress;
 
 import com.mattdahepic.autooredictconv.common.convert.Conversions;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.Objects;
@@ -18,7 +18,7 @@ public class ConvertPacket {
     public static void handle (ConvertPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             Conversions.convert(Objects.requireNonNull(ctx.get().getSender()));
-            ctx.get().getSender().displayClientMessage(new TranslatableComponent("autooredictconv.converting"),true);
+            ctx.get().getSender().displayClientMessage(Component.translatable("autooredictconv.converting"),true);
         });
         ctx.get().setPacketHandled(true);
     }

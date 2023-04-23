@@ -41,13 +41,13 @@ public class ConversionsConfig {
             for (String c : comment) writer.write(c);
             new TreeMap<>(Conversions.tagConversionMap).forEach((tag, item) -> {
                 try {
-                    writer.write(tag+"="+item.getRegistryName()+"\n");
+                    writer.write(tag+"="+ForgeRegistries.ITEMS.getKey(item)+"\n");
                 } catch (IOException ignored) {}
             });
             writer.write("\n");
             new TreeMap<>(Conversions.itemConversionMap).forEach((in,out) -> {
                 try {
-                    writer.write(in.getRegistryName()+">"+out.getRegistryName()+"\n");
+                    writer.write(ForgeRegistries.ITEMS.getKey(in)+">"+ForgeRegistries.ITEMS.getKey(out)+"\n");
                 } catch (IOException ignored) {}
             });
         } catch (IOException ignored) {}
